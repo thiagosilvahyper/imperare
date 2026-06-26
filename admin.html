@@ -13,12 +13,22 @@
 ============================================================ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --gold:#c9a96e;--gold-light:rgba(201,169,110,0.15);--gold-border:rgba(201,169,110,0.25);
-  --bg:#0f0e0d;--bg2:#161513;--bg3:#1e1c1a;--bg4:#252320;
-  --text:#f2efe9;--text2:#b4aea4;--text3:#7a7570;
+  --gold:#c9a96e;
+  --gold-light:rgba(201,169,110,0.15);
+  --gold-border:rgba(201,169,110,0.25);
+  --bg:#0f0e0d;
+  --bg2:#161513;
+  --bg3:#1e1c1a;
+  --bg4:#252320;
+  --text:#f2efe9;
+  --text2:#b4aea4;
+  --text3:#7a7570;
   --border:rgba(255,255,255,0.07);
-  --success:#4a9e6b;--error:#c0392b;--warning:#d4a017;
-  --radius:8px;--radius-lg:12px;
+  --success:#4a9e6b;
+  --error:#c0392b;
+  --warning:#d4a017;
+  --radius:8px;
+  --radius-lg:12px;
   --transition:0.2s ease;
 }
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:14px;}
@@ -448,6 +458,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
       <button class="nav-item" onclick="showSection('settings',this)"><i class="fas fa-cog"></i> Definições</button>
       <div class="nav-section-label">Site</div>
       <button class="nav-item" onclick="window.open('index.html','_blank')"><i class="fas fa-external-link-alt"></i> Ver Site</button>
+      <button class="nav-item" onclick="window.open('imoveis.html','_blank')"><i class="fas fa-building"></i> Ver Imóveis</button>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
@@ -559,7 +570,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
         <div class="section-header">
           <div class="section-header-left">
             <h2>Logs do Servidor</h2>
-            <p>Últimas 100 entradas de log do servidor Node.js.</p>
+            <p>Últimas 100 entradas de log do servidor.</p>
           </div>
           <div style="display:flex;gap:0.6rem;">
             <button class="btn-secondary" onclick="loadLogs()"><i class="fas fa-sync"></i> Atualizar</button>
@@ -591,6 +602,12 @@ tr:hover td{background:rgba(255,255,255,0.02);}
             </div>
             <button class="btn-secondary" onclick="importBackup()"><i class="fas fa-upload"></i> Importar</button>
           </div>
+          <div class="settings-card">
+            <h3><i class="fas fa-broom" style="color:var(--gold);margin-right:0.5rem;"></i>Limpar Cache</h3>
+            <p style="font-size:0.82rem;color:var(--text2);margin-bottom:1rem;">Após fazer alterações, limpe a cache do frontend para ver as atualizações.</p>
+            <button class="btn-secondary" onclick="clearSiteCache()"><i class="fas fa-sync-alt"></i> Limpar Cache</button>
+            <div id="clearCacheResult" style="margin-top:0.8rem;font-size:0.8rem;"></div>
+          </div>
         </div>
       </div>
 
@@ -611,7 +628,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
           </div>
           <div class="settings-card">
             <h3>Testar Ligação</h3>
-            <p style="font-size:0.82rem;color:var(--text2);margin-bottom:1rem;">Verifica se o backend Node.js está online e a responder corretamente.</p>
+            <p style="font-size:0.82rem;color:var(--text2);margin-bottom:1rem;">Verifica se o backend está online e a responder corretamente.</p>
             <button class="btn-secondary" onclick="checkServer(true)"><i class="fas fa-plug"></i> Testar Agora</button>
             <div id="testResult" style="margin-top:1rem;font-size:0.8rem;"></div>
           </div>
@@ -627,7 +644,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
           <div class="settings-card">
             <h3>Instruções</h3>
             <div style="font-size:0.8rem;color:var(--text2);line-height:1.8;">
-              <p style="margin-bottom:0.5rem;">Para iniciar o servidor:</p>
+              <p style="margin-bottom:0.5rem;">Para iniciar o servidor local:</p>
               <code style="background:var(--bg);padding:0.5rem 0.8rem;border-radius:6px;display:block;margin-bottom:0.8rem;color:var(--gold);font-family:monospace;">node server.js</code>
               <p style="margin-bottom:0.5rem;">Com hot-reload (nodemon):</p>
               <code style="background:var(--bg);padding:0.5rem 0.8rem;border-radius:6px;display:block;color:var(--gold);font-family:monospace;">npm run dev</code>
@@ -818,19 +835,19 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 <div id="toastContainer"></div>
 
 <!-- ============================================================
-     JAVASCRIPT
+     JAVASCRIPT - COMPLETO E CORRIGIDO PARA VERCEL
 ============================================================ -->
 <script>
 'use strict';
 
 // ============================================================
-// CONFIG
+// CONFIG - CORRIGIDO PARA VERCEL (CAMINHOS RELATIVOS)
 // ============================================================
-const API = 'http://localhost:3000';
+const API_BASE = '';  // Vazio = caminho relativo
 const API_KEY = 'imperare2024';
 let isLoggedIn = false;
 let currentFeatures = [];
-let currentPhotos = []; // Array de objetos { file, dataURL, name, size, type }
+let currentPhotos = [];
 
 // ============================================================
 // AUTH
@@ -903,14 +920,14 @@ async function checkServer(showResult) {
   const dot = document.getElementById('statusDot');
   const label = document.getElementById('statusLabel');
   try {
-    const r = await fetch(API + '/api/health', { headers: { 'X-API-Key': API_KEY } });
+    const r = await fetch('/api/health', { headers: { 'X-API-Key': API_KEY } });
     if (r.ok) {
       const data = await r.json();
       dot.className = 'status-dot online';
       label.textContent = 'Servidor online';
       if (showResult) {
         const el = document.getElementById('testResult');
-        el.innerHTML = '<span style="color:var(--success)"><i class="fas fa-check-circle"></i> Online · v' + (data.version||'5.0') + ' · Uptime: ' + Math.floor(data.uptime/60) + 'min</span>';
+        el.innerHTML = '<span style="color:var(--success)"><i class="fas fa-check-circle"></i> Online · v' + (data.version||'5.0') + ' · ' + (data.vercel ? '🌐 Vercel' : '💻 Local') + '</span>';
       }
     } else { throw new Error('HTTP ' + r.status); }
   } catch(e) {
@@ -927,7 +944,7 @@ async function checkServer(showResult) {
 // ============================================================
 async function loadStats() {
   try {
-    const r = await fetch(API + '/api/stats', { headers: { 'X-API-Key': API_KEY } });
+    const r = await fetch('/api/stats', { headers: { 'X-API-Key': API_KEY } });
     if (!r.ok) return;
     const d = await r.json();
     document.getElementById('kpi-team').textContent = d.team?.active ?? '—';
@@ -946,7 +963,7 @@ let teamData = [];
 
 async function loadTeam() {
   try {
-    const r = await fetch(API + '/api/team', { headers: { 'X-API-Key': API_KEY } });
+    const r = await fetch('/api/team', { headers: { 'X-API-Key': API_KEY } });
     if (!r.ok) throw new Error();
     teamData = await r.json();
   } catch {
@@ -1017,7 +1034,7 @@ async function saveTeamMember() {
     status: document.getElementById('teamStatus').value,
   };
   try {
-    const url = id ? `${API}/api/team/${id}` : `${API}/api/team`;
+    const url = id ? `/api/team/${id}` : `/api/team`;
     const method = id ? 'PUT' : 'POST';
     const r = await fetch(url, {
       method, headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
@@ -1036,7 +1053,7 @@ async function saveTeamMember() {
 async function deleteTeamMember(id, name) {
   if (!confirm(`Remover "${name}" da equipa?`)) return;
   try {
-    const r = await fetch(`${API}/api/team/${id}`, {
+    const r = await fetch(`/api/team/${id}`, {
       method: 'DELETE', headers: { 'X-API-Key': API_KEY }
     });
     if (!r.ok) throw new Error();
@@ -1065,7 +1082,7 @@ let propsData = [];
 
 async function loadProperties() {
   try {
-    const r = await fetch(API + '/api/properties', { headers: { 'X-API-Key': API_KEY } });
+    const r = await fetch('/api/properties', { headers: { 'X-API-Key': API_KEY } });
     if (!r.ok) throw new Error();
     const resp = await r.json();
     propsData = resp.data || resp;
@@ -1137,7 +1154,6 @@ function editProperty(id) {
   document.getElementById('propDescription').value = p.description || '';
   document.getElementById('propFeatured').checked = !!p.featured;
   currentFeatures = [...(p.features || [])];
-  // Converter fotos existentes para o formato currentPhotos
   currentPhotos = (p.photos || []).map(url => ({
     dataURL: url,
     name: 'foto-' + Date.now() + '.jpg',
@@ -1152,21 +1168,18 @@ function editProperty(id) {
 // UPLOAD DE FOTOS - DRAG & DROP
 // ============================================================
 
-// Configurar eventos de drag & drop
 function setupPhotoUpload() {
   const uploadArea = document.getElementById('photoUploadArea');
   const fileInput = document.getElementById('photoInput');
   
   if (!uploadArea) return;
   
-  // Clique para abrir seletor de ficheiros
   uploadArea.addEventListener('click', function(e) {
     if (e.target.tagName !== 'INPUT') {
       fileInput.click();
     }
   });
   
-  // Drag & Drop
   uploadArea.addEventListener('dragover', function(e) {
     e.preventDefault();
     this.classList.add('dragover');
@@ -1186,7 +1199,6 @@ function setupPhotoUpload() {
     }
   });
   
-  // Seleção de ficheiros via input
   fileInput.addEventListener('change', function(e) {
     if (this.files.length) {
       handleFiles(this.files);
@@ -1195,10 +1207,9 @@ function setupPhotoUpload() {
   });
 }
 
-// Processar ficheiros selecionados
 function handleFiles(files) {
   const maxPhotos = 10;
-  const maxSize = 5 * 1024 * 1024; // 5MB
+  const maxSize = 5 * 1024 * 1024;
   const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
   
   const validFiles = Array.from(files).filter(file => {
@@ -1236,7 +1247,6 @@ function handleFiles(files) {
   });
 }
 
-// Renderizar galeria de fotos
 function renderPhotosGrid() {
   const grid = document.getElementById('photosGrid');
   const hiddenInput = document.getElementById('propPhotosData');
@@ -1256,12 +1266,10 @@ function renderPhotosGrid() {
     </div>
   `).join('');
   
-  // Atualizar campo oculto com as URLs das fotos (para enviar ao servidor)
   const photoUrls = currentPhotos.map(p => p.dataURL);
   hiddenInput.value = JSON.stringify(photoUrls);
 }
 
-// Remover foto
 function removePhoto(index) {
   currentPhotos.splice(index, 1);
   renderPhotosGrid();
@@ -1301,7 +1309,6 @@ async function saveProperty() {
   }
   if (!currentPhotos.length) { toast('Adicione pelo menos uma foto', 'error'); return; }
   
-  // Extrair apenas as URLs das fotos para enviar ao servidor
   const photoUrls = currentPhotos.map(p => p.dataURL);
   
   const body = {
@@ -1319,7 +1326,7 @@ async function saveProperty() {
   };
   
   try {
-    const url = id ? `${API}/api/properties/${id}` : `${API}/api/properties`;
+    const url = id ? `/api/properties/${id}` : `/api/properties`;
     const method = id ? 'PUT' : 'POST';
     const r = await fetch(url, {
       method, headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
@@ -1341,7 +1348,7 @@ async function saveProperty() {
 async function deleteProperty(id, title) {
   if (!confirm(`Remover "${title}"?`)) return;
   try {
-    const r = await fetch(`${API}/api/properties/${id}`, {
+    const r = await fetch(`/api/properties/${id}`, {
       method: 'DELETE', headers: { 'X-API-Key': API_KEY }
     });
     if (!r.ok) throw new Error();
@@ -1358,10 +1365,10 @@ async function loadLogs() {
   const box = document.getElementById('logsBox');
   box.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A carregar...';
   try {
-    const r = await fetch(API + '/api/logs?limit=100', { headers: { 'X-API-Key': API_KEY } });
+    const r = await fetch('/api/admin/logs?limit=100', { headers: { 'X-API-Key': API_KEY } });
     if (!r.ok) throw new Error();
     const d = await r.json();
-    if (!d.logs.length) { box.innerHTML = '<span style="color:var(--text3)">Sem logs disponíveis.</span>'; return; }
+    if (!d.logs || !d.logs.length) { box.innerHTML = '<span style="color:var(--text3)">Sem logs disponíveis.</span>'; return; }
     box.innerHTML = d.logs.map(l => {
       const cls = l.includes(' 500') || l.includes('ERROR') ? 'err' : l.includes(' 404') || l.includes('WARN') ? 'warn' : l.includes(' 200') || l.includes('201') ? 'ok' : '';
       return `<div class="log-line ${cls}">${esc(l)}</div>`;
@@ -1375,7 +1382,7 @@ async function loadLogs() {
 async function clearLogs() {
   if (!confirm('Limpar todos os logs?')) return;
   try {
-    const r = await fetch(API + '/api/logs', { method: 'DELETE', headers: { 'X-API-Key': API_KEY } });
+    const r = await fetch('/api/admin/logs', { method: 'DELETE', headers: { 'X-API-Key': API_KEY } });
     if (!r.ok) throw new Error();
     toast('Logs limpos!', 'success');
     loadLogs();
@@ -1387,7 +1394,7 @@ async function clearLogs() {
 // ============================================================
 async function exportBackup() {
   try {
-    const r = await fetch(API + '/api/backup', { headers: { 'X-API-Key': API_KEY } });
+    const r = await fetch('/api/admin/backup', { headers: { 'X-API-Key': API_KEY } });
     if (!r.ok) throw new Error();
     const d = await r.json();
     const blob = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' });
@@ -1408,7 +1415,7 @@ function importBackup() {
       const d = JSON.parse(e.target.result);
       const payload = d.data || d;
       if (!confirm('Isto vai sobrescrever todos os dados atuais. Continuar?')) return;
-      const r = await fetch(API + '/api/backup/restore', {
+      const r = await fetch('/api/admin/backup/restore', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
         body: JSON.stringify(payload)
@@ -1422,21 +1429,53 @@ function importBackup() {
 }
 
 // ============================================================
+// LIMPAR CACHE DO SITE
+// ============================================================
+function clearSiteCache() {
+  const result = document.getElementById('clearCacheResult');
+  try {
+    if ('caches' in window) {
+      caches.keys().then(function(names) {
+        names.forEach(function(name) {
+          caches.delete(name);
+        });
+      });
+    }
+    
+    const keysToRemove = ['imperare-theme', 'imperare-lang'];
+    keysToRemove.forEach(function(key) {
+      localStorage.removeItem(key);
+    });
+    
+    result.innerHTML = '<span style="color:var(--success)">✅ Cache limpo! A página vai recarregar...</span>';
+    
+    setTimeout(function() {
+      window.location.reload(true);
+    }, 1500);
+    
+    toast('Cache do site limpo com sucesso!', 'success');
+  } catch(e) {
+    result.innerHTML = '<span style="color:var(--error)">❌ Erro ao limpar cache: ' + e.message + '</span>';
+    toast('Erro ao limpar cache', 'error');
+  }
+}
+
+// ============================================================
 // SERVER INFO
 // ============================================================
 async function loadServerInfo() {
   const el = document.getElementById('serverInfo');
   try {
-    const r = await fetch(API + '/api/health', { headers: { 'X-API-Key': API_KEY } });
+    const r = await fetch('/api/health', { headers: { 'X-API-Key': API_KEY } });
     if (!r.ok) throw new Error();
     const d = await r.json();
     el.innerHTML = `
       <div>🟢 <b>Status:</b> Online</div>
       <div>📦 <b>Versão:</b> ${d.version || '5.0'}</div>
-      <div>⏱️ <b>Uptime:</b> ${Math.floor(d.uptime/60)} min ${Math.floor(d.uptime%60)} seg</div>
-      <div>📋 <b>Logs:</b> ${d.logs?.total || 0} entradas (${d.logs?.errors||0} erros)</div>
-      <div>🗄️ <b>Cache:</b> ${d.cache?.size || 0} entradas (TTL: ${d.cache?.ttl})</div>
-      <div>🌍 <b>Ambiente:</b> ${d.environment || 'development'}</div>`;
+      <div>⏱️ <b>Uptime:</b> ${d.uptime ? Math.floor(d.uptime/60) + ' min' : 'N/A'}</div>
+      <div>🌍 <b>Ambiente:</b> ${d.environment || 'development'} ${d.vercel ? '🌐 (Vercel)' : '💻 (Local)'}</div>
+      <div>👥 <b>Equipa:</b> ${d.team || 0} membros</div>
+      <div>🏠 <b>Imóveis:</b> ${d.properties || 0} cadastrados</div>`;
   } catch {
     el.innerHTML = '<span style="color:var(--error)">❌ Servidor offline</span>';
   }
@@ -1484,6 +1523,8 @@ function esc(s) {
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
   setupPhotoUpload();
+  console.log('🚀 IMPERARE Admin - Inicializado!');
+  console.log('🔗 API: /api (caminho relativo)');
 });
 </script>
 </body>

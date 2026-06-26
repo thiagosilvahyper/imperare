@@ -1,6 +1,6 @@
 /**
  * IMPERARE - Script Principal
- * Versão: 5.0 - CORRIGIDO
+ * Versão: 5.0 - CORRIGIDO PARA VERCEL
  * Funcionalidades: Preloader, Hero Carrossel, Menu Mobile (Sidebar), Tema, 
  * Contadores Animados, Scroll Reveal, Scroll Spy, Newsletter, Modal, 
  * Tradução, Gestão de Equipa (Backend), Gestão de Imóveis com Carrossel
@@ -8,6 +8,13 @@
 
 (function() {
     'use strict';
+
+    // ============================================================
+    // CONFIGURAÇÃO DA API - CAMINHO RELATIVO PARA VERCEL
+    // ============================================================
+    const API_URL = '/api';  // <-- ALTERADO PARA RELATIVO
+
+    console.log('🔗 API URL:', API_URL);
 
     // ============================================================
     // 1. PRELOADER
@@ -174,7 +181,7 @@
     }
 
     // ============================================================
-    // 6. SIDEBAR / MENU MOBILE - CORRIGIDO
+    // 6. SIDEBAR / MENU MOBILE
     // ============================================================
     function initSidebar() {
         var sidebar = document.getElementById('sidebar');
@@ -182,10 +189,6 @@
         var toggleBtn = document.getElementById('sidebarToggle');
         var closeBtn = document.getElementById('sidebarClose');
         var navLinks = sidebar ? sidebar.querySelectorAll('.sidebar-nav a') : [];
-
-        console.log('🔍 Inicializando Sidebar...');
-        console.log('📌 sidebar:', sidebar);
-        console.log('📌 toggleBtn:', toggleBtn);
 
         if (!sidebar || !toggleBtn) {
             console.warn('⚠️ Sidebar ou botão toggle não encontrados');
@@ -196,14 +199,12 @@
             sidebar.classList.add('open');
             if (overlay) overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
-            console.log('📖 Sidebar aberta');
         }
 
         function closeSidebar() {
             sidebar.classList.remove('open');
             if (overlay) overlay.classList.remove('active');
             document.body.style.overflow = '';
-            console.log('📕 Sidebar fechada');
         }
 
         function toggleSidebar() {
@@ -214,41 +215,33 @@
             }
         }
 
-        // Evento do botão toggle
         toggleBtn.addEventListener('click', function(e) {
             e.stopPropagation();
             toggleSidebar();
         });
 
-        // Fechar com botão X
         if (closeBtn) {
             closeBtn.addEventListener('click', closeSidebar);
         }
 
-        // Fechar ao clicar no overlay
         if (overlay) {
             overlay.addEventListener('click', closeSidebar);
         }
 
-        // Fechar ao clicar num link da sidebar
         navLinks.forEach(function(link) {
             link.addEventListener('click', function() {
-                // Remove active de todos
                 navLinks.forEach(function(l) { l.classList.remove('active'); });
-                // Adiciona active ao clicado
                 this.classList.add('active');
                 closeSidebar();
             });
         });
 
-        // Fechar com tecla ESC
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && sidebar.classList.contains('open')) {
                 closeSidebar();
             }
         });
 
-        // Scroll spy para sidebar
         var sections = document.querySelectorAll('section[id]');
         if (sections.length && navLinks.length) {
             window.addEventListener('scroll', function() {
@@ -314,7 +307,6 @@
             var isLight = document.body.classList.toggle('light-theme');
             themeIcon.className = isLight ? 'fas fa-sun' : 'fas fa-moon';
             localStorage.setItem('imperare-theme', isLight ? 'light' : 'dark');
-            console.log('🌓 Tema alterado para:', isLight ? 'Claro' : 'Escuro');
         });
 
         setInterval(function() {
@@ -322,8 +314,6 @@
                 setThemeBasedOnTime();
             }
         }, 60000);
-
-        console.log('🌓 Tema inicializado com sucesso!');
     }
 
     // ============================================================
@@ -346,7 +336,7 @@
     }
 
     // ============================================================
-    // 9. SCROLL SPY (para o header, caso exista)
+    // 9. SCROLL SPY
     // ============================================================
     function initScrollSpy() {
         var sections = document.querySelectorAll('section[id]');
@@ -743,7 +733,7 @@
     }
 
     // ============================================================
-    // 11. MODAL (genérico para futura utilização)
+    // 11. MODAL
     // ============================================================
     function initModal() {
         var modal = document.getElementById('genericModal');
@@ -779,7 +769,7 @@
     }
 
     // ============================================================
-    // 12. ANIMAÇÃO DE ENTRADA (fade-in body)
+    // 12. ANIMAÇÃO DE ENTRADA
     // ============================================================
     function initBodyAnimation() {
         document.body.style.opacity = '0';
@@ -792,8 +782,6 @@
     function initTeam() {
         var teamGrid = document.getElementById('teamGrid');
         if (!teamGrid) return;
-
-        var API_URL = 'http://localhost:3000/api/team';
 
         function renderTeam(members) {
             teamGrid.innerHTML = '';
@@ -817,7 +805,7 @@
             });
         }
 
-        fetch(API_URL)
+        fetch(API_URL + '/team')
             .then(function(response) {
                 if (!response.ok) {
                     throw new Error('Erro ao carregar equipa');
@@ -826,23 +814,25 @@
             })
             .then(function(data) {
                 renderTeam(data);
+                console.log('👥 Equipa carregada do backend!');
             })
             .catch(function(error) {
                 console.error('Erro ao carregar equipa:', error);
+                // Fallback com dados estáticos
                 var fallbackData = [
                     {
                         id: 1,
                         name: 'Thiago Silva',
                         role: 'Fundador & CEO',
                         photo: 'https://ui-avatars.com/api/?name=Thiago+Silva&background=c9a96e&color=fff&size=128',
-                        bio: 'Fundador da IMPERARE com mais de 20 anos de experiência no mercado de alto padrão.'
+                        bio: 'Fundador da IMPERARE com mais de 20 anos de experiência.'
                     },
                     {
                         id: 2,
                         name: 'Diogo Costa',
                         role: 'Sócio & Diretor Comercial',
                         photo: 'https://ui-avatars.com/api/?name=Diogo+Costa&background=c9a96e&color=fff&size=128',
-                        bio: 'Sócio e diretor de projetos, especialista em arquitetura e design de interiores.'
+                        bio: 'Sócio e diretor de projetos, especialista em arquitetura.'
                     },
                     {
                         id: 3,
@@ -870,7 +860,6 @@
             return;
         }
 
-        var API_URL = 'http://localhost:3000/api/properties';
         var allProperties = [];
         var currentSlide = 0;
         var slidesPerView = 3;
@@ -1032,7 +1021,7 @@
         }
 
         function loadProperties() {
-            fetch(API_URL)
+            fetch(API_URL + '/properties')
                 .then(function(response) {
                     if (!response.ok) throw new Error('Erro HTTP: ' + response.status);
                     return response.json();
@@ -1041,6 +1030,7 @@
                     var properties = data.data || data;
                     allProperties = properties;
                     renderCarousel(properties);
+                    console.log('🏠 Imóveis carregados do backend!');
                 })
                 .catch(function(error) {
                     console.error('❌ Erro ao carregar imóveis:', error);
@@ -1242,6 +1232,7 @@
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
         console.log('🚀 IMPERARE - Inicializando site...');
+        console.log('🔗 API URL:', API_URL);
         
         initBodyAnimation();
         initPreloader();
@@ -1249,7 +1240,7 @@
         initHeroCarousel();
         initScrollReveal();
         initCounters();
-        initSidebar(); // <-- SIDEBAR INICIALIZADA CORRETAMENTE
+        initSidebar();
         initThemeToggle();
         initNewsletter();
         initScrollSpy();
@@ -1261,13 +1252,12 @@
         initBackToTop();
         initLoginModal();
         
-        // Inicializar carrossel de imóveis com um pequeno atraso
         setTimeout(function() {
             initPropertiesCarousel();
         }, 500);
 
         console.log('🚀 IMPERARE - Site carregado com sucesso!');
-        console.log('📋 Versão: 5.0 - Com sidebar corrigida');
+        console.log('📋 Versão: 5.0 - Com API relativa para Vercel');
     });
 
 })();
