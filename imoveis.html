@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMPERARE · Todos os Imóveis</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* ============================================================
+           RESET E VARIÁVEIS
+           ============================================================ */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #c9a96e;
+            --gold-light: #e4d5b0;
+            --gold-dark: #b8944a;
+            --dark: #0f0e0d;
+            --dark-surface: #1a1816;
+            --dark-card: #22201d;
+            --text-light: #f2efe9;
+            --text-muted: #b4aea4;
+            --text-dim: #7a756e;
+            --border-dim: rgba(201, 169, 110, 0.2);
+            --border-gold: rgba(201, 169, 110, 0.5);
+            --shadow-gold: 0 8px 32px rgba(201, 169, 110, 0.08);
+            --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --font-primary: 'Inter', sans-serif;
+            --bg-body: #0f0e0d;
+            --bg-surface: #1a1816;
+            --bg-card: #22201d;
+            --text-primary: #f2efe9;
+            --text-secondary: #b4aea4;
+            --border-color: rgba(201, 169, 110, 0.2);
+            --container-max: 1300px;
+            --container-padding: 2rem;
+            --radius: 8px;
+            --radius-lg: 12px;
+        }
+
+        body.light-theme {
+            --bg-body: #f5f2ed;
+            --bg-surface: #ede9e1;
+            --bg-card: #e5dfd6;
+            --text-primary: #1a1816;
+            --text-secondary: #4a4540;
+            --text-dim: #6b6560;
+            --border-color: rgba(201, 169, 110, 0.3);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            min-height: 100vh;
+        }
+
+        /* ============================================================
+           PRELOADER
+           ============================================================ */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-body);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        #preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .preloader-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        .preloader-logo-img {
+            height: 120px;
+            width: auto;
+            display: block;
+            animation: pulseLogo 1.6s ease-in-out infinite;
+        }
+        @keyframes pulseLogo {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.85; }
+        }
+        .preloader-line {
+            width: 160px;
+            height: 3px;
+            background: var(--border-color);
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+        .preloader-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gold);
+            animation: lineProgress 1.8s ease-in-out infinite;
+            border-radius: 2px;
+        }
+        @keyframes lineProgress {
+            0% { left: -100%; width: 30%; }
+            50% { left: 30%; width: 40%; }
+            100% { left: 100%; width: 30%; }
+        }
+        .preloader-text {
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 400;
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        .site-header {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 0.8rem 2rem;
+            z-index: 1000;
+            background: var(--bg-body);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        .site-header.scrolled {
+            background: rgba(11, 10, 9, 0.95);
+            backdrop-filter: blur(12px);
+        }
+        body.light-theme .site-header.scrolled {
+            background: rgba(245, 242, 237, 0.95);
+        }
+        .header-container {
+            max-width: var(--container-max);
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .logo-img {
+            height: 60px;
+            width: auto;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-shrink: 0;
+        }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.5rem;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            border-radius: var(--radius);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-family: var(--font-primary);
+            background: transparent;
+            cursor: pointer;
+        }
+        .btn-back:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        .theme-toggle {
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            background: transparent;
+            cursor: pointer;
+        }
+        .theme-toggle:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* ============================================================
+           CONTAINER E UTILITÁRIOS
+           ============================================================ */
+        .container {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 var(--container-padding);
+        }
+        .section-header {
+            margin-bottom: 2.5rem;
+        }
+        .section-header.text-center {
+            text-align: center;
+        }
+        .section-title {
+            font-size: 2.8rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            line-height: 1.15;
+        }
+        .section-title span {
+            color: var(--gold);
+            font-weight: 400;
+        }
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            line-height: 1.7;
+        }
+        .section-header.text-center .section-subtitle {
+            margin: 0 auto;
+        }
+        .gold-line {
+            width: 70px;
+            height: 2px;
+            background: var(--gold);
+            margin: 1.2rem 0 2rem;
+        }
+        .gold-line-center {
+            width: 70px;
+            height: 2px;
+            background: var(--gold);
+            margin: 1.2rem auto 2rem;
+        }
+        .text-center {
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2.5rem;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 2px;
+            font-size: 0.75rem;
+            transition: var(--transition);
+            cursor: pointer;
+            background: transparent;
+            font-family: var(--font-primary);
+            text-align: center;
+            border-radius: var(--radius);
+        }
+        .btn:hover {
+            background: var(--gold);
+            color: var(--dark);
+            border-color: var(--gold);
+        }
+        .btn-gold {
+            background: var(--gold);
+            color: var(--dark);
+            border-color: var(--gold);
+        }
+        .btn-gold:hover {
+            background: var(--gold-light);
+            border-color: var(--gold-light);
+            color: var(--dark);
+        }
+
+        /* ============================================================
+           FILTROS
+           ============================================================ */
+        .filters-section {
+            margin-bottom: 2rem;
+        }
+        .filters-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.2rem 1.5rem;
+        }
+        .filters-wrapper .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .filters-wrapper .filter-group label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        .filters-wrapper select,
+        .filters-wrapper input {
+            padding: 0.5rem 0.8rem;
+            background: var(--bg-body);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+            font-size: 0.85rem;
+            min-width: 140px;
+            transition: all 0.3s ease;
+        }
+        .filters-wrapper select:focus,
+        .filters-wrapper input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+        .filters-wrapper select option {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+        .filter-reset {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+            background: none;
+            font-family: var(--font-primary);
+        }
+        .filter-reset:hover {
+            color: var(--gold);
+        }
+
+        /* ============================================================
+           PROPERTIES GRID
+           ============================================================ */
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 2rem;
+            padding: 0 0 2rem;
+        }
+
+        .property-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .property-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--border-gold);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .property-image {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+            background: var(--bg-surface);
+        }
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .property-card:hover .property-image img {
+            transform: scale(1.03);
+        }
+
+        .property-status-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .property-status-badge.disponivel { background: rgba(74, 158, 107, 0.9); }
+        .property-status-badge.em_lancamento { background: rgba(201, 169, 110, 0.9); }
+        .property-status-badge.reservado { background: rgba(212, 160, 23, 0.9); }
+        .property-status-badge.vendido { background: rgba(192, 57, 43, 0.9); }
+
+        .property-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .property-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .property-location {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .property-location i {
+            color: var(--gold);
+        }
+
+        .property-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .property-features {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 0.5rem 0 0.8rem;
+        }
+        .property-features span {
+            font-size: 0.7rem;
+            background: rgba(201, 169, 110, 0.08);
+            color: var(--gold);
+            padding: 0.15rem 0.6rem;
+            border-radius: 12px;
+            border: 1px solid rgba(201, 169, 110, 0.1);
+        }
+
+        .property-desc {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex: 1;
+        }
+
+        .property-meta {
+            display: flex;
+            gap: 1.5rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+        .property-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .property-meta-item i {
+            color: var(--gold);
+            width: 16px;
+        }
+
+        /* ============================================================
+           EMPTY STATE
+           ============================================================ */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--gold);
+            opacity: 0.3;
+            display: block;
+            margin-bottom: 1.5rem;
+        }
+        .empty-state h3 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* ============================================================
+           LOADING
+           ============================================================ */
+        .loading-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+        .loading-state i {
+            font-size: 2.5rem;
+            color: var(--gold);
+            display: block;
+            margin-bottom: 1rem;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ============================================================
+           BACK TO TOP
+           ============================================================ */
+        .back-to-top {
+            position: fixed;
+            bottom: 2.5rem;
+            right: 2.5rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(201, 169, 110, 0.9);
+            color: #0f0e0d;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 4px 20px rgba(201, 169, 110, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .back-to-top:hover {
+            background: var(--gold);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 30px rgba(201, 169, 110, 0.4);
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .site-footer {
+            background: var(--bg-body);
+            padding: 2rem 0;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            transition: background 0.4s ease;
+            text-align: center;
+        }
+        .site-footer .copy {
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================================
+           RESPONSIVO
+           ============================================================ */
+        @media (max-width: 1024px) {
+            .section-title {
+                font-size: 2.4rem;
+            }
+            .properties-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2rem;
+            }
+            .properties-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .property-image {
+                height: 180px;
+            }
+            .filters-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filters-wrapper .filter-group {
+                flex-wrap: wrap;
+            }
+            .filters-wrapper select,
+            .filters-wrapper input {
+                min-width: 100%;
+            }
+            .filter-reset {
+                margin-left: 0;
+                text-align: center;
+            }
+            .property-meta {
+                flex-wrap: wrap;
+                gap: 0.8rem;
+            }
+            .site-header {
+                padding: 0.5rem 1rem;
+            }
+            .logo-img {
+                height: 45px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .section-title {
+                font-size: 1.6rem;
+            }
+            .property-image {
+                height: 150px;
+            }
+            .property-body {
+                padding: 1rem;
+            }
+            .property-title {
+                font-size: 1rem;
+            }
+            .property-price {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* ============================================================
+           WHATSAPP FLOATING
+           ============================================================ */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #25d366;
+            color: #fff;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
+        }
+        @media (max-width: 600px) {
+            .whatsapp-float {
+                width: 48px;
+                height: 48px;
+                font-size: 1.6rem;
+                bottom: 1.2rem;
+                right: 1.2rem;
+            }
+            .back-to-top {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+                bottom: 5.5rem;
+                right: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    PRELOADER
+    ============================================================ -->
+    <div id="preloader">
+        <div class="preloader-logo">
+            <img src="logoimperare.png" alt="IMPERARE" class="preloader-logo-img">
+        </div>
+        <div class="preloader-line"></div>
+        <div class="preloader-text">A carregar</div>
+    </div>
+
+    <!-- ============================================================
+    HEADER
+    ============================================================ -->
+    <header class="site-header" id="mainHeader">
+        <div class="header-container">
+            <a href="index.html" class="logo-wrapper" aria-label="IMPERARE - Página inicial">
+                <img class="logo-img" src="logoimperare.png" alt="IMPERARE">
+            </a>
+
+            <div class="header-actions">
+                <a href="index.html" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema claro/escuro">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================
+    MAIN CONTENT
+    ============================================================ -->
+    <main style="padding: 2rem 0;">
+        <div class="container">
+            <!-- Título -->
+            <div class="section-header text-center">
+                <h1 class="section-title">Todos os <span>Imóveis</span></h1>
+                <div class="gold-line-center"></div>
+                <p class="section-subtitle" style="margin:0 auto;">Conheça todas as oportunidades exclusivas da IMPERARE.</p>
+            </div>
+
+            <!-- Filtros -->
+            <section class="filters-section">
+                <div class="filters-wrapper">
+                    <div class="filter-group">
+                        <label for="filterStatus">Status</label>
+                        <select id="filterStatus">
+                            <option value="">Todos</option>
+                            <option value="disponivel">Disponível</option>
+                            <option value="em_lancamento">Em Lançamento</option>
+                            <option value="reservado">Reservado</option>
+                            <option value="vendido">Vendido</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterLocation">Localização</label>
+                        <select id="filterLocation">
+                            <option value="">Todas</option>
+                            <option value="Lisboa">Lisboa</option>
+                            <option value="Algarve">Algarve</option>
+                            <option value="Porto">Porto</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterSort">Ordenar</label>
+                        <select id="filterSort">
+                            <option value="default">Padrão</option>
+                            <option value="price_asc">Preço (Menor-Maior)</option>
+                            <option value="price_desc">Preço (Maior-Menor)</option>
+                            <option value="newest">Mais Recentes</option>
+                            <option value="views">Mais Vistos</option>
+                        </select>
+                    </div>
+                    <button class="filter-reset" id="filterReset">
+                        <i class="fas fa-undo"></i> Limpar Filtros
+                    </button>
+                </div>
+            </section>
+
+            <!-- Propriedades Grid -->
+            <div class="properties-grid" id="propertiesGrid">
+                <div class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    A carregar imóveis...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================================
+    BACK TO TOP
+    ============================================================ -->
+    <button id="back-to-top-button" class="back-to-top" aria-label="Voltar ao topo">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- ============================================================
+    WHATSAPP FLOATING
+    ============================================================ -->
+    <a href="https://wa.me/351927663721" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contactar via WhatsApp">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i>
+    </a>
+
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <span class="copy">&copy; 2026 IMPERARE · Construção e Incorporação, Lda. Todos os direitos reservados.</span>
+        </div>
+    </footer>
+
+    <!-- ============================================================
+    SCRIPTS
+    ============================================================ -->
+    <script>
+        // ============================================================
+        // 1. PRELOADER
+        // ============================================================
+        (function() {
+            function removePreloader() {
+                var preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.classList.add('hidden');
+                    setTimeout(function() {
+                        if (!preloader.classList.contains('hidden')) {
+                            preloader.style.opacity = '0';
+                            preloader.style.visibility = 'hidden';
+                            preloader.style.pointerEvents = 'none';
+                        }
+                    }, 3000);
+                }
+            }
+
+            if (document.readyState === 'complete') {
+                removePreloader();
+            } else {
+                window.addEventListener('load', function() {
+                    setTimeout(removePreloader, 800);
+                });
+            }
+
+            var attempts = 0;
+            var fallbackInterval = setInterval(function() {
+                attempts++;
+                var preloader = document.getElementById('preloader');
+                if (preloader && preloader.classList.contains('hidden')) {
+                    clearInterval(fallbackInterval);
+                    return;
+                }
+                if (attempts >= 5) {
+                    clearInterval(fallbackInterval);
+                    if (preloader) {
+                        preloader.style.opacity = '0';
+                        preloader.style.visibility = 'hidden';
+                        preloader.style.pointerEvents = 'none';
+                        preloader.classList.add('hidden');
+                    }
+                }
+            }, 1000);
+        })();
+
+        // ============================================================
+        // 2. TEMA CLARO/ESCURO
+        // ============================================================
+        (function() {
+            var themeToggle = document.getElementById('themeToggle');
+            var themeIcon = themeToggle ? themeToggle.querySelector('i') : null;
+
+            if (!themeToggle || !themeIcon) return;
+
+            var savedTheme = localStorage.getItem('imperare-theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                themeIcon.className = 'fas fa-sun';
+            } else if (savedTheme === 'dark') {
+                document.body.classList.remove('light-theme');
+                themeIcon.className = 'fas fa-moon';
+            }
+
+            themeToggle.addEventListener('click', function() {
+                var isLight = document.body.classList.toggle('light-theme');
+                themeIcon.className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+                localStorage.setItem('imperare-theme', isLight ? 'light' : 'dark');
+            });
+        })();
+
+        // ============================================================
+        // 3. HEADER SCROLL EFFECT
+        // ============================================================
+        (function() {
+            var header = document.getElementById('mainHeader');
+            if (!header) return;
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 80) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        })();
+
+        // ============================================================
+        // 4. BACK TO TOP
+        // ============================================================
+        (function() {
+            var button = document.getElementById('back-to-top-button');
+            if (!button) return;
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 400) {
+                    button.classList.add('visible');
+                } else {
+                    button.classList.remove('visible');
+                }
+            });
+            button.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        })();
+
+        // ============================================================
+        // 5. CARREGAR IMÓVEIS COM FILTROS
+        // ============================================================
+        (function() {
+            var API_URL = 'http://localhost:3000/api/properties';
+            var grid = document.getElementById('propertiesGrid');
+            var filterStatus = document.getElementById('filterStatus');
+            var filterLocation = document.getElementById('filterLocation');
+            var filterSort = document.getElementById('filterSort');
+            var filterReset = document.getElementById('filterReset');
+
+            var allProperties = [];
+            var filteredProperties = [];
+
+            function esc(s) {
+                if (!s) return '';
+                return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g,
+                    '&quot;');
+            }
+
+            function getStatusLabel(status) {
+                var map = {
+                    'disponivel': 'Disponível',
+                    'em_lancamento': 'Em Lançamento',
+                    'reservado': 'Reservado',
+                    'vendido': 'Vendido'
+                };
+                return map[status] || status;
+            }
+
+            function getStatusClass(status) {
+                var map = {
+                    'disponivel': 'disponivel',
+                    'em_lancamento': 'em_lancamento',
+                    'reservado': 'reservado',
+                    'vendido': 'vendido'
+                };
+                return map[status] || '';
+            }
+
+            function getFinishLabel(finish) {
+                var map = {
+                    'basico': 'Básico',
+                    'medio': 'Médio',
+                    'luxo': 'Luxo',
+                    'premium': 'Premium'
+                };
+                return map[finish] || finish;
+            }
+
+            function renderProperties(properties) {
+                grid.innerHTML = '';
+
+                if (!properties || properties.length === 0) {
+                    grid.innerHTML =
+                        '<div class="empty-state">' +
+                        '<i class="fas fa-home"></i>' +
+                        '<h3>Nenhum imóvel encontrado</h3>' +
+                        '<p>Tente ajustar os filtros ou volte mais tarde.</p>' +
+                        '</div>';
+                    return;
+                }
+
+                properties.forEach(function(property) {
+                    var firstPhoto = property.photos && property.photos.length > 0 ? property.photos[0] : null;
+                    var statusLabel = getStatusLabel(property.status);
+                    var statusClass = getStatusClass(property.status);
+                    var finishLabel = getFinishLabel(property.finish);
+
+                    var card = document.createElement('div');
+                    card.className = 'property-card';
+
+                    var featuresHtml = (property.features || []).slice(0, 5).map(function(f) {
+                        return '<span>' + esc(f) + '</span>';
+                    }).join('');
+
+                    var metaHtml = '';
+                    if (property.bedrooms) {
+                        metaHtml +=
+                            '<div class="property-meta-item"><i class="fas fa-bed"></i> ' + property.bedrooms +
+                            ' Quartos</div>';
+                    }
+                    if (property.bathrooms) {
+                        metaHtml +=
+                            '<div class="property-meta-item"><i class="fas fa-bath"></i> ' + property.bathrooms +
+                            ' WC</div>';
+                    }
+                    if (property.area) {
+                        metaHtml +=
+                            '<div class="property-meta-item"><i class="fas fa-ruler-combined"></i> ' + property
+                            .area + ' m²</div>';
+                    }
+
+                    card.innerHTML =
+                        '<div class="property-image">' +
+                        (firstPhoto ? '<img src="' + esc(firstPhoto) + '" alt="' + esc(property.title) +
+                            '" loading="lazy" onerror="this.style.display=\'none\'">' :
+                            '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg-surface);color:var(--text-dim);"><i class="fas fa-building" style="font-size:3rem;opacity:0.3;"></i></div>'
+                            ) +
+                        '<span class="property-status-badge ' + statusClass + '">' + statusLabel + '</span>' +
+                        '</div>' +
+                        '<div class="property-body">' +
+                        '<div class="property-title">' + esc(property.title) + '</div>' +
+                        '<div class="property-location"><i class="fas fa-map-pin"></i> ' + esc(property.location) +
+                        '</div>' +
+                        '<div class="property-price">' + (property.priceFormatted || '€' + Number(property.price)
+                            .toLocaleString('pt-PT')) + '</div>' +
+                        '<div class="property-features">' + featuresHtml +
+                        '<span>' + finishLabel + '</span>' +
+                        '</div>' +
+                        '<div class="property-desc">' + (property.description ? esc(property.description.substring(
+                            0, 180) + (property.description.length > 180 ? '...' : '')) :
+                            'Empreendimento exclusivo com acabamentos de excelência.') + '</div>' +
+                        '<div class="property-meta">' + metaHtml + '</div>' +
+                        '</div>';
+
+                    grid.appendChild(card);
+                });
+            }
+
+            function applyFilters() {
+                var status = filterStatus.value;
+                var location = filterLocation.value;
+                var sort = filterSort.value;
+
+                var filtered = [...allProperties];
+
+                if (status) {
+                    filtered = filtered.filter(function(p) { return p.status === status; });
+                }
+
+                if (location) {
+                    filtered = filtered.filter(function(p) { return p.location === location; });
+                }
+
+                var sortOptions = {
+                    'default': function(a, b) { return (a.order || 0) - (b.order || 0); },
+                    'price_asc': function(a, b) { return a.price - b.price; },
+                    'price_desc': function(a, b) { return b.price - a.price; },
+                    'newest': function(a, b) { return new Date(b.createdAt) - new Date(a.createdAt); },
+                    'views': function(a, b) { return (b.views || 0) - (a.views || 0); }
+                };
+
+                var sortFn = sortOptions[sort] || sortOptions['default'];
+                filtered.sort(sortFn);
+
+                filteredProperties = filtered;
+                renderProperties(filtered);
+            }
+
+            function loadProperties() {
+                grid.innerHTML =
+                    '<div class="loading-state"><i class="fas fa-spinner"></i> A carregar imóveis...</div>';
+
+                fetch(API_URL)
+                    .then(function(response) {
+                        if (!response.ok) throw new Error('Erro HTTP: ' + response.status);
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        allProperties = data.data || data;
+                        applyFilters();
+                    })
+                    .catch(function(error) {
+                        console.error('❌ Erro ao carregar imóveis:', error);
+                        grid.innerHTML =
+                            '<div class="empty-state">' +
+                            '<i class="fas fa-exclamation-triangle" style="color:#e74c3c;"></i>' +
+                            '<h3>Erro ao carregar imóveis</h3>' +
+                            '<p>Não foi possível carregar os imóveis. Tente novamente mais tarde.</p>' +
+                            '<p style="font-size:0.8rem;color:var(--text-dim);margin-top:0.5rem;">' + error
+                            .message + '</p>' +
+                            '</div>';
+                    });
+            }
+
+            // Event listeners dos filtros
+            filterStatus.addEventListener('change', applyFilters);
+            filterLocation.addEventListener('change', applyFilters);
+            filterSort.addEventListener('change', applyFilters);
+
+            filterReset.addEventListener('click', function() {
+                filterStatus.value = '';
+                filterLocation.value = '';
+                filterSort.value = 'default';
+                applyFilters();
+            });
+
+            // Carregar imóveis
+            loadProperties();
+
+            // Atualizar ao clicar em "Ver Todos" (recarregar)
+            console.log('🏠 Página de imóveis carregada com sucesso!');
+        })();
+    </script>
+
+</body>
+</html>

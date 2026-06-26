@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "name": "Thiago Silva",
+    "slug": "thiago-silva",
+    "role": "Diretor Comercial",
+    "photo": "https://ui-avatars.com/api/?name=Thiago+Silva&background=c9a96e&color=fff&size=128",
+    "linkedin": "",
+    "bio": "Sócio e diretor de projetos, especialista em arquitetura e design de interiores.",
+    "status": "active",
+    "order": 1,
+    "social": {
+      "instagram": "",
+      "linkedin": "",
+      "twitter": ""
+    },
+    "createdAt": "2026-06-26T15:31:38.401Z",
+    "updatedAt": "2026-06-26T17:31:31.780Z"
+  },
+  {
+    "id": 2,
+    "name": "Diogo Costa",
+    "slug": "diogo-costa",
+    "role": "Fundador",
+    "photo": "https://ui-avatars.com/api/?name=Diogo+Costa&background=c9a96e&color=fff&size=128",
+    "linkedin": "",
+    "bio": "Fundador da IMPERARE com mais de 20 anos de experiência no mercado de alto padrão.",
+    "status": "active",
+    "order": 2,
+    "social": {
+      "instagram": "",
+      "linkedin": "",
+      "twitter": ""
+    },
+    "createdAt": "2026-06-26T15:31:38.402Z",
+    "updatedAt": "2026-06-26T17:31:38.442Z"
+  },
+  {
+    "id": 3,
+    "name": "Greyci Fontoura",
+    "slug": "greyci-fontoura",
+    "role": "Sócia",
+    "photo": "https://ui-avatars.com/api/?name=Greyci%20Fontoura&background=c9a96e&color=fff&size=128",
+    "linkedin": "",
+    "bio": "",
+    "status": "active",
+    "order": 3,
+    "social": {
+      "instagram": "",
+      "linkedin": "",
+      "twitter": ""
+    },
+    "createdAt": "2026-06-26T17:30:35.331Z",
+    "updatedAt": "2026-06-26T17:30:35.331Z"
+  }
+]

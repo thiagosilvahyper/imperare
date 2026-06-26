@@ -1,0 +1,23 @@
+{
+  "siteName": "IMPERARE",
+  "siteVersion": "5.0",
+  "lastBackup": null,
+  "maxPhotos": 10,
+  "allowedImageTypes": [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/gif"
+  ],
+  "maxImageSize": 5242880,
+  "maintenanceMode": false,
+  "maintenanceMessage": "Site em manutenção. Volte em breve!",
+  "contactEmail": "imperareconstrutora@gmail.com",
+  "contactPhone": "+351 927 663 721",
+  "socialLinks": {
+    "instagram": "https://www.instagram.com/imperareconstrutora",
+    "linkedin": "#",
+    "youtube": "#",
+    "facebook": "#"
+  }
+}

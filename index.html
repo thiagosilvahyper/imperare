@@ -1,0 +1,3968 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMPERARE · Construtora de Alto Padrão</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* ============================================================
+           RESET E VARIÁVEIS
+           ============================================================ */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #c9a96e;
+            --gold-light: #e4d5b0;
+            --gold-dark: #b8944a;
+            --dark: #0f0e0d;
+            --dark-surface: #1a1816;
+            --dark-card: #22201d;
+            --text-light: #f2efe9;
+            --text-muted: #b4aea4;
+            --text-dim: #7a756e;
+            --border-dim: rgba(201, 169, 110, 0.2);
+            --border-gold: rgba(201, 169, 110, 0.5);
+            --shadow-gold: 0 8px 32px rgba(201, 169, 110, 0.08);
+            --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --font-primary: 'Inter', sans-serif;
+            --bg-body: #0f0e0d;
+            --bg-surface: #1a1816;
+            --bg-card: #22201d;
+            --text-primary: #f2efe9;
+            --text-secondary: #b4aea4;
+            --border-color: rgba(201, 169, 110, 0.2);
+            --container-max: 1300px;
+            --container-padding: 2rem;
+            --radius: 8px;
+            --radius-lg: 12px;
+        }
+
+        body.light-theme {
+            --bg-body: #f5f2ed;
+            --bg-surface: #ede9e1;
+            --bg-card: #e5dfd6;
+            --text-primary: #1a1816;
+            --text-secondary: #4a4540;
+            --text-dim: #6b6560;
+            --border-color: rgba(201, 169, 110, 0.3);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            opacity: 0;
+            animation: fadeInBody 0.8s ease forwards;
+        }
+
+        @keyframes fadeInBody {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ============================================================
+           PRELOADER
+           ============================================================ */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-body);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        #preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .preloader-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        .preloader-logo-img {
+            height: 160px;
+            width: auto;
+            display: block;
+            animation: pulseLogo 1.6s ease-in-out infinite;
+        }
+        @keyframes pulseLogo {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        .preloader-line {
+            width: 160px;
+            height: 3px;
+            background: var(--border-color);
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+        .preloader-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gold);
+            animation: lineProgress 1.8s ease-in-out infinite;
+            border-radius: 2px;
+        }
+        @keyframes lineProgress {
+            0% { left: -100%; width: 30%; }
+            50% { left: 30%; width: 40%; }
+            100% { left: 100%; width: 30%; }
+        }
+        .preloader-text {
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 400;
+        }
+
+        /* ============================================================
+           CONTAINER E UTILITÁRIOS
+           ============================================================ */
+        .container {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 var(--container-padding);
+        }
+        .section-header {
+            margin-bottom: 2.5rem;
+        }
+        .section-header.text-center {
+            text-align: center;
+        }
+        .section-title {
+            font-size: 2.8rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            line-height: 1.15;
+        }
+        .section-title span {
+            color: var(--gold);
+            font-weight: 400;
+        }
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            line-height: 1.7;
+        }
+        .section-header.text-center .section-subtitle {
+            margin: 0 auto;
+        }
+        .gold-line {
+            width: 70px;
+            height: 2px;
+            background: var(--gold);
+            margin: 1.2rem 0 2rem;
+        }
+        .gold-line-center {
+            width: 70px;
+            height: 2px;
+            background: var(--gold);
+            margin: 1.2rem auto 2rem;
+        }
+        .text-center {
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.8rem;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 2px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            cursor: pointer;
+            background: transparent;
+            font-family: var(--font-primary);
+            text-align: center;
+            border-radius: var(--radius);
+        }
+        .btn:hover {
+            background: var(--gold);
+            color: var(--dark);
+            border-color: var(--gold);
+        }
+        .btn-gold {
+            background: var(--gold);
+            color: var(--dark);
+            border-color: var(--gold);
+        }
+        .btn-gold:hover {
+            background: var(--gold-light);
+            border-color: var(--gold-light);
+            color: var(--dark);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+        .btn-outline:hover {
+            background: var(--gold);
+            color: var(--dark);
+            border-color: var(--gold);
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 0.5rem 2rem 0.5rem 80px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            background: transparent;
+            height: 110px;
+            display: flex;
+            align-items: center;
+        }
+        .site-header.scrolled {
+            height: 85px;
+            background: rgba(11, 10, 9, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        body.light-theme .site-header.scrolled {
+            background: rgba(245, 242, 237, 0.95);
+        }
+        .header-container {
+            max-width: var(--container-max);
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            margin-right: auto;
+        }
+        .logo-img {
+            height: 100px;
+            width: auto;
+            display: block;
+            filter: brightness(1) drop-shadow(0 0 15px rgba(201, 169, 110, 0.2));
+            transition: all 0.3s ease;
+        }
+        .site-header.scrolled .logo-img {
+            height: 75px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-shrink: 0;
+        }
+        .lang-switch {
+            display: flex;
+            gap: 0.2rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            align-items: center;
+        }
+        .lang-link {
+            color: var(--text-secondary);
+            padding: 0.15rem 0.4rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .lang-link.active {
+            color: var(--gold);
+            background: rgba(201, 169, 110, 0.12);
+            border: 1px solid rgba(201, 169, 110, 0.2);
+        }
+        .lang-link:hover {
+            color: var(--gold-light);
+        }
+        .lang-sep {
+            color: var(--border-color);
+            font-weight: 300;
+        }
+        .theme-toggle {
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            background: transparent;
+            cursor: pointer;
+        }
+        .theme-toggle:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* ============================================================
+           SIDEBAR - MENU LATERAL FLUTUANTE
+           ============================================================ */
+        .menu-toggle {
+            position: fixed !important;
+            top: 20px !important;
+            left: 20px !important;
+            z-index: 10001 !important;
+            font-size: 1.5rem !important;
+            color: #c9a96e !important;
+            background: rgba(15, 14, 13, 0.9) !important;
+            border: 2px solid rgba(201, 169, 110, 0.3) !important;
+            border-radius: 10px !important;
+            padding: 12px 14px !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            backdrop-filter: blur(10px) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+            width: 50px !important;
+            height: 50px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            line-height: 1 !important;
+            border: none !important;
+        }
+        .menu-toggle:hover {
+            background: rgba(201, 169, 110, 0.2) !important;
+            border-color: #c9a96e !important;
+            transform: scale(1.05) !important;
+            box-shadow: 0 4px 30px rgba(201, 169, 110, 0.2) !important;
+        }
+        .menu-toggle i {
+            font-size: 1.5rem !important;
+        }
+
+        body.light-theme .menu-toggle {
+            background: rgba(245, 242, 237, 0.95) !important;
+            border-color: rgba(0, 0, 0, 0.15) !important;
+            color: #1a1816 !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+        body.light-theme .menu-toggle:hover {
+            background: rgba(201, 169, 110, 0.15) !important;
+            border-color: #c9a96e !important;
+            color: #c9a96e !important;
+        }
+
+        .sidebar-overlay {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.7) !important;
+            z-index: 9998 !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transition: all 0.4s ease !important;
+            backdrop-filter: blur(4px) !important;
+        }
+        .sidebar-overlay.active {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            left: -300px !important;
+            width: 280px !important;
+            height: 100% !important;
+            background: #0f0e0d !important;
+            z-index: 9999 !important;
+            padding: 20px 18px !important;
+            transition: left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+            overflow-y: auto !important;
+            box-shadow: 4px 0 40px rgba(0, 0, 0, 0.5) !important;
+            border-right: 1px solid rgba(201, 169, 110, 0.1) !important;
+        }
+        .sidebar.open {
+            left: 0 !important;
+        }
+
+        body.light-theme .sidebar {
+            background: #f5f2ed !important;
+            border-right: 1px solid rgba(0, 0, 0, 0.08) !important;
+        }
+        body.light-theme .sidebar .sidebar-logo-text {
+            color: #1a1816 !important;
+        }
+        body.light-theme .sidebar .sidebar-nav a {
+            color: #4a4540 !important;
+        }
+        body.light-theme .sidebar .sidebar-nav a:hover,
+        body.light-theme .sidebar .sidebar-nav a.active {
+            color: #c9a96e !important;
+            background: rgba(201, 169, 110, 0.1) !important;
+        }
+        body.light-theme .sidebar .sidebar-nav a.active::before {
+            background: #c9a96e !important;
+        }
+        body.light-theme .sidebar .sidebar-close {
+            color: #4a4540 !important;
+        }
+        body.light-theme .sidebar .sidebar-close:hover {
+            color: #c9a96e !important;
+        }
+        body.light-theme .sidebar .sidebar-divider {
+            background: rgba(0, 0, 0, 0.08) !important;
+        }
+        body.light-theme .sidebar .sidebar-footer .sidebar-contact a {
+            color: #6b6560 !important;
+        }
+        body.light-theme .sidebar .sidebar-footer .sidebar-contact a:hover {
+            color: #c9a96e !important;
+        }
+
+        .sidebar-close {
+            position: absolute !important;
+            top: 14px !important;
+            right: 14px !important;
+            font-size: 1.2rem !important;
+            color: #b4aea4 !important;
+            background: none !important;
+            border: none !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            padding: 5px !important;
+        }
+        .sidebar-close:hover {
+            color: #c9a96e !important;
+            transform: rotate(90deg) !important;
+        }
+
+        .sidebar-logo {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            margin-bottom: 18px !important;
+            padding-bottom: 14px !important;
+            border-bottom: 1px solid rgba(201, 169, 110, 0.1) !important;
+        }
+        .sidebar-logo img {
+            height: 38px !important;
+            width: auto !important;
+        }
+        .sidebar-logo-text {
+            font-size: 1.1rem !important;
+            letter-spacing: 2px !important;
+            color: #f2efe9 !important;
+            font-weight: 300 !important;
+        }
+        .sidebar-logo-text strong {
+            color: #c9a96e !important;
+            font-weight: 600 !important;
+        }
+
+        .sidebar-nav {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0.3rem !important;
+        }
+        .sidebar-nav a {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            padding: 10px 14px !important;
+            color: #b4aea4 !important;
+            text-decoration: none !important;
+            font-size: 0.85rem !important;
+            border-radius: 6px !important;
+            transition: all 0.3s ease !important;
+            position: relative !important;
+        }
+        .sidebar-nav a i {
+            width: 20px !important;
+            text-align: center !important;
+            color: #c9a96e !important;
+            font-size: 0.95rem !important;
+        }
+        .sidebar-nav a .nav-indicator {
+            margin-left: auto !important;
+            font-size: 0.6rem !important;
+            color: rgba(201, 169, 110, 0.3) !important;
+            transition: all 0.3s ease !important;
+        }
+        .sidebar-nav a:hover .nav-indicator,
+        .sidebar-nav a.active .nav-indicator {
+            color: #c9a96e !important;
+        }
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            color: #c9a96e !important;
+            background: rgba(201, 169, 110, 0.12) !important;
+        }
+        .sidebar-nav a.active::before {
+            content: '' !important;
+            position: absolute !important;
+            left: 0 !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            width: 3px !important;
+            height: 60% !important;
+            background: #c9a96e !important;
+            border-radius: 0 3px 3px 0 !important;
+        }
+
+        .sidebar-divider {
+            height: 1px !important;
+            background: rgba(201, 169, 110, 0.1) !important;
+            margin: 10px 0 !important;
+        }
+
+        .sidebar-footer .sidebar-contact {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 6px !important;
+        }
+        .sidebar-footer .sidebar-contact a {
+            color: #7a756e !important;
+            text-decoration: none !important;
+            font-size: 0.75rem !important;
+            padding: 3px 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            transition: all 0.3s ease !important;
+        }
+        .sidebar-footer .sidebar-contact a:hover {
+            color: #c9a96e !important;
+        }
+        .sidebar-footer .sidebar-contact a i {
+            width: 18px !important;
+            font-size: 0.8rem !important;
+            color: #c9a96e !important;
+        }
+
+        /* ============================================================
+           BOTÕES FLUTUANTES - CORRIGIDOS
+           ============================================================ */
+        
+        /* WHATSAPP - LADO DIREITO INFERIOR */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #25d366;
+            color: #fff;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+            transition: all 0.3s ease;
+            z-index: 999;
+            text-decoration: none;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
+        }
+
+        /* BACK TO TOP - LADO ESQUERDO INFERIOR */
+        .back-to-top {
+            position: fixed;
+            bottom: 2.5rem;
+            left: 2rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(201, 169, 110, 0.9);
+            color: #0f0e0d;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 4px 20px rgba(201, 169, 110, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .back-to-top:hover {
+            background: var(--gold);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 30px rgba(201, 169, 110, 0.4);
+        }
+
+        body.light-theme .back-to-top {
+            background: #c9a96e;
+            color: #0f0e0d;
+        }
+
+        /* ============================================================
+           RESPONSIVO PARA BOTÕES FLUTUANTES
+           ============================================================ */
+        @media (max-width: 600px) {
+            .whatsapp-float {
+                width: 48px;
+                height: 48px;
+                font-size: 1.6rem;
+                bottom: 1.2rem;
+                right: 1.2rem;
+            }
+            .back-to-top {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+                bottom: 1.5rem;
+                left: 1.2rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .whatsapp-float {
+                width: 40px;
+                height: 40px;
+                font-size: 1.3rem;
+                bottom: 1rem;
+                right: 1rem;
+            }
+            .back-to-top {
+                width: 36px;
+                height: 36px;
+                font-size: 0.85rem;
+                bottom: 1.2rem;
+                left: 1rem;
+            }
+        }
+
+        /* ============================================================
+           HERO
+           ============================================================ */
+        .hero {
+            height: 100vh;
+            min-height: 700px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+        .hero-slides-wrapper {
+            position: absolute;
+            inset: 0;
+        }
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+        }
+        .hero-slide.active {
+            opacity: 1;
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(11, 10, 9, 0.7) 0%, rgba(11, 10, 9, 0.2) 70%, transparent 100%);
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 680px;
+            padding: 0;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .hero-slide.active .hero-content {
+            animation: fadeInUp 1s ease 0.3s forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .hero-badge {
+            display: inline-block;
+            padding: 0.3rem 1.2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .hero-title {
+            font-size: 4.6rem;
+            font-weight: 300;
+            line-height: 1.08;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+            color: var(--text-light);
+        }
+        .hero-title em {
+            font-style: normal;
+            color: var(--gold);
+            font-weight: 400;
+        }
+        .hero-description {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2.5rem;
+        }
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.2rem;
+        }
+        .hero-controls {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.8rem;
+            z-index: 3;
+        }
+        .hero-control-btn {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+        .hero-control-btn.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            transform: scale(1.2);
+        }
+        .hero-control-btn:hover {
+            border-color: var(--gold);
+        }
+        .hero-scroll {
+            position: absolute;
+            bottom: 6rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            animation: bounceDown 2s infinite;
+            z-index: 2;
+        }
+        @keyframes bounceDown {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(8px); }
+        }
+
+        /* ============================================================
+           SERVIÇOS / PILLARS
+           ============================================================ */
+        .pillars {
+            padding: 5rem 0;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.4s ease;
+        }
+        .pillar-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+            margin-top: 1rem;
+        }
+        .pillar-item {
+            padding: 2.5rem 2rem;
+            border-left: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        .pillar-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .pillar-item:hover {
+            border-left-color: var(--gold);
+            background: rgba(201, 169, 110, 0.04);
+            transform: translateX(4px);
+        }
+        .pillar-icon {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+        .pillar-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.8rem;
+        }
+        .pillar-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* ============================================================
+           ABOUT
+           ============================================================ */
+        .about {
+            padding: 5rem 0;
+            background: var(--bg-body);
+            transition: background 0.4s ease;
+        }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        .about-text p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 1.2rem;
+        }
+        .counters {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        .counter-item {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            background: var(--bg-card);
+        }
+        .counter-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .counter-item:hover {
+            border-color: var(--border-gold);
+        }
+        .counter-item .number {
+            font-size: 2.8rem;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 1px;
+            display: block;
+            line-height: 1.2;
+        }
+        .counter-item .label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-top: 0.3rem;
+        }
+
+        /* ============================================================
+           EQUIPA
+           ============================================================ */
+        .team-section {
+            padding: 5rem 0;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.4s ease;
+        }
+        .team-grid {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+        }
+        .team-member-card {
+            flex: 0 0 auto;
+            width: 220px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .team-member-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-4px);
+        }
+        .team-member-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 1rem;
+            border: 2px solid rgba(201, 169, 110, 0.2);
+        }
+        .team-member-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .team-member-card h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+        .team-member-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================================
+           PROCESSO
+           ============================================================ */
+        .process-section {
+            padding: 5rem 0;
+            background: var(--bg-body);
+            transition: background 0.4s ease;
+        }
+        .process-timeline {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 0;
+            margin-top: 3rem;
+            position: relative;
+        }
+        .process-item {
+            flex: 1;
+            max-width: 210px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .process-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .process-item:nth-child(1) { transition-delay: 0s; }
+        .process-item:nth-child(2) { transition-delay: 0.18s; }
+        .process-item:nth-child(3) { transition-delay: 0.36s; }
+        .process-item:nth-child(4) { transition-delay: 0.54s; }
+        .process-connector {
+            flex: 1;
+            height: 2px;
+            background: rgba(201, 169, 110, 0.2);
+            margin-top: 36px;
+            min-width: 20px;
+            max-width: 70px;
+            position: relative;
+            overflow: hidden;
+        }
+        .process-connector::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: width 1.2s ease 0.7s;
+        }
+        .process-section.in-view .process-connector::after {
+            width: 100%;
+        }
+        .process-icon-wrap {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 2px solid rgba(201, 169, 110, 0.3);
+            background: rgba(201, 169, 110, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            position: relative;
+            transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+        }
+        .process-item:hover .process-icon-wrap {
+            border-color: var(--gold);
+            background: rgba(201, 169, 110, 0.14);
+            box-shadow: 0 0 0 8px rgba(201, 169, 110, 0.07);
+        }
+        .process-icon-wrap i {
+            font-size: 1.5rem;
+            color: var(--gold);
+        }
+        .process-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: #0f0e0d;
+            font-size: 0.65rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .process-phase-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        .process-item h3 {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.45rem;
+        }
+        .process-item p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.55;
+            max-width: 165px;
+        }
+
+        /* ============================================================
+           INVESTIMENTO - CARROSSEL
+           ============================================================ */
+        .investment-section {
+            padding: 5rem 0;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.4s ease;
+        }
+        .invest-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+        .carousel-wrapper {
+            position: relative;
+            overflow: hidden;
+            grid-column: 1 / -1;
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease;
+            gap: 1.5rem;
+        }
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            grid-column: 1 / -1;
+        }
+        .carousel-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            background: rgba(201, 169, 110, 0.1);
+            color: var(--gold);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-btn:hover {
+            background: rgba(201, 169, 110, 0.2);
+        }
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .carousel-dot.active {
+            background: var(--gold);
+        }
+        .view-all-btn {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .invest-card-new {
+            border-radius: 10px;
+            background: rgba(201, 169, 110, 0.04);
+            border: 1px solid rgba(201, 169, 110, 0.15);
+            padding: 2rem 1.8rem 1.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+            cursor: default;
+        }
+        .invest-card-new:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.3);
+            border-color: rgba(201, 169, 110, 0.4);
+        }
+        .invest-card-icon-w {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(201, 169, 110, 0.1);
+            border: 1px solid rgba(201, 169, 110, 0.22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            transition: background 0.3s;
+        }
+        .invest-card-new:hover .invest-card-icon-w {
+            background: rgba(201, 169, 110, 0.2);
+        }
+        .invest-card-icon-w i {
+            color: var(--gold);
+            font-size: 1.25rem;
+        }
+        .invest-region-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: var(--gold);
+            font-weight: 600;
+        }
+        .invest-card-new h3 {
+            font-size: 1.45rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            margin: 0;
+        }
+        .invest-card-desc {
+            font-size: 0.87rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 0.8rem;
+        }
+        .invest-stats-row {
+            display: flex;
+            gap: 1.2rem;
+            border-top: 1px solid rgba(201, 169, 110, 0.12);
+            padding-top: 1rem;
+            margin-top: auto;
+        }
+        .i-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 0.08rem;
+        }
+        .i-stat strong {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: -0.02em;
+        }
+        .i-stat span {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .invest-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.7rem;
+            background: rgba(201, 169, 110, 0.1);
+            color: var(--gold);
+            border: 1px solid rgba(201, 169, 110, 0.2);
+            border-radius: 20px;
+            padding: 0.22rem 0.7rem;
+            width: fit-content;
+            margin-top: 0.2rem;
+        }
+        .invest-badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
+            display: inline-block;
+        }
+
+        /* ============================================================
+           DEPOIMENTOS
+           ============================================================ */
+        .testimonial {
+            padding: 5rem 0;
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.4s ease;
+        }
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+        }
+        .testimonial-card {
+            padding: 2.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .testimonial-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .testimonial-card:hover {
+            border-color: var(--border-gold);
+        }
+        .quote-icon {
+            color: var(--gold);
+            font-size: 1.5rem;
+            opacity: 0.4;
+            margin-bottom: 0.8rem;
+        }
+        .testimonial-quote {
+            font-size: 1.05rem;
+            font-weight: 300;
+            line-height: 1.7;
+            color: var(--text-primary);
+            font-style: italic;
+        }
+        .testimonial-author {
+            display: block;
+            margin-top: 1.2rem;
+            color: var(--text-secondary);
+            font-style: normal;
+            font-weight: 400;
+            font-size: 0.9rem;
+        }
+        .testimonial-author strong {
+            color: var(--gold-light);
+            font-weight: 600;
+        }
+
+        /* ============================================================
+           BLOG
+           ============================================================ */
+        .blog-section {
+            padding: 5rem 0;
+            background: var(--bg-body);
+            transition: background 0.4s ease;
+        }
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        .blog-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .blog-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-4px);
+        }
+        .blog-image {
+            height: 180px;
+            background: linear-gradient(135deg, rgba(201, 169, 110, 0.1), rgba(201, 169, 110, 0.05));
+            border-bottom: 1px solid var(--border-color);
+        }
+        .blog-content {
+            padding: 1.5rem;
+        }
+        .blog-content h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        .blog-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        /* ============================================================
+           NEWSLETTER
+           ============================================================ */
+        .newsletter {
+            padding: 4.5rem 0;
+            background: var(--bg-body);
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.4s ease;
+        }
+        .newsletter-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        .newsletter-title {
+            font-weight: 300;
+            font-size: 2.2rem;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+        .newsletter-title span {
+            color: var(--gold);
+        }
+        .newsletter-description {
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            font-size: 1rem;
+        }
+        .news-form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.8rem;
+            flex: 1 1 400px;
+        }
+        .news-input {
+            padding: 1rem 1.8rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+            min-width: 220px;
+            flex: 1;
+            border-radius: var(--radius);
+            transition: all 0.3s ease;
+        }
+        .news-input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+        .news-input::placeholder {
+            color: var(--text-secondary);
+        }
+        .news-btn {
+            flex-shrink: 0;
+        }
+
+        /* ============================================================
+           CONTACTO
+           ============================================================ */
+        .contact-section {
+            padding: 5rem 0;
+            background: var(--bg-body);
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.4s ease;
+        }
+        .quotation-form,
+        .contact-form {
+            max-width: 700px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+        .quotation-form .form-group,
+        .contact-form .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .quotation-form label,
+        .contact-form label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        .quotation-form input,
+        .quotation-form select,
+        .contact-form input,
+        .contact-form textarea {
+            padding: 0.9rem 1.2rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+            border-radius: var(--radius);
+            transition: all 0.3s ease;
+            width: 100%;
+            font-size: 0.95rem;
+        }
+        .quotation-form input:focus,
+        .quotation-form select:focus,
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
+        }
+        .quotation-form select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a96e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            cursor: pointer;
+        }
+        .quotation-form select option {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+        .quotation-form .btn,
+        .contact-form .btn {
+            grid-column: 1 / -1;
+            justify-self: center;
+            min-width: 200px;
+        }
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        .contact-map {
+            height: 100%;
+            min-height: 400px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .contact-map iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+            border: none;
+        }
+        .quotation-result {
+            max-width: 700px;
+            margin: 2rem auto 0;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .site-footer {
+            background: var(--bg-body);
+            padding: 3.5rem 0 2rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            transition: background 0.4s ease;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.5fr;
+            gap: 3rem;
+            padding-bottom: 2.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .footer-brand .logo-wrapper {
+            margin-bottom: 1rem;
+        }
+        .footer-logo {
+            height: 80px;
+        }
+        .footer-brand-description {
+            font-size: 0.9rem;
+            max-width: 320px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        .footer-heading {
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.2rem;
+        }
+        .footer-nav-list li {
+            margin-bottom: 0.6rem;
+        }
+        .footer-nav-list li a {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        .footer-nav-list li a:hover {
+            color: var(--gold);
+        }
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.85rem;
+        }
+        .contact-item i {
+            color: var(--gold);
+            width: 1.2rem;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .contact-item a {
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+        .contact-item a:hover {
+            color: var(--gold-light);
+        }
+        .contact-item span {
+            color: var(--text-secondary);
+        }
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-top: 2rem;
+        }
+        .footer-copyright .copy {
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+        }
+        .footer-bottom-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .footer-bottom-links a {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+        .footer-bottom-links a:hover {
+            color: var(--gold);
+        }
+        .footer-socials {
+            display: flex;
+            gap: 1.2rem;
+        }
+        .footer-socials a {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .footer-socials a:hover {
+            color: var(--gold);
+        }
+
+        /* ============================================================
+           MODAL
+           ============================================================ */
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-overlay-bg {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+        }
+        .modal-container {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            max-width: 600px;
+            width: 100%;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        .modal.open .modal-container {
+            transform: scale(1) translateY(0);
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            padding: 0.25rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .modal-close:hover {
+            color: var(--gold);
+        }
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        .modal-body {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ============================================================
+           RESPONSIVO
+           ============================================================ */
+        @media (max-width: 1024px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            .section-title {
+                font-size: 2.4rem;
+            }
+            .hero-title {
+                font-size: 3.8rem;
+            }
+            .blog-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .menu-toggle {
+                top: 16px !important;
+                left: 16px !important;
+                width: 44px !important;
+                height: 44px !important;
+                font-size: 1.3rem !important;
+                padding: 10px 12px !important;
+            }
+            .menu-toggle i {
+                font-size: 1.3rem !important;
+            }
+            .logo-img {
+                height: 75px !important;
+            }
+            .site-header.scrolled .logo-img {
+                height: 55px !important;
+            }
+            .site-header {
+                height: 90px !important;
+                padding-left: 75px !important;
+            }
+            .site-header.scrolled {
+                height: 70px !important;
+            }
+            .preloader-logo-img {
+                height: 120px !important;
+            }
+            .hero-title {
+                font-size: 3rem;
+            }
+            .hero-stats {
+                gap: 2rem;
+                flex-wrap: wrap;
+            }
+            .pillar-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .section-title {
+                font-size: 2.2rem;
+            }
+            .newsletter-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .news-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .news-input {
+                min-width: auto;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .counters {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+            }
+            .team-grid {
+                gap: 1.5rem;
+            }
+            .team-member-card {
+                width: 180px;
+            }
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .contact-map {
+                min-height: 300px;
+            }
+            .contact-map iframe {
+                min-height: 300px;
+            }
+            .process-timeline {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+            }
+            .process-connector {
+                width: 2px;
+                height: 36px;
+                min-width: unset;
+                max-width: unset;
+                margin: 0;
+            }
+            .process-item {
+                max-width: 280px;
+            }
+            .invest-grid {
+                grid-template-columns: 1fr;
+            }
+            .quotation-form,
+            .contact-form {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .menu-toggle {
+                top: 12px !important;
+                left: 12px !important;
+                width: 40px !important;
+                height: 40px !important;
+                font-size: 1.1rem !important;
+                padding: 8px 10px !important;
+            }
+            .menu-toggle i {
+                font-size: 1.1rem !important;
+            }
+            .logo-img {
+                height: 50px !important;
+            }
+            .site-header.scrolled .logo-img {
+                height: 38px !important;
+            }
+            .site-header {
+                height: 70px !important;
+                padding: 0.3rem 1rem 0.3rem 65px !important;
+            }
+            .site-header.scrolled {
+                height: 58px !important;
+            }
+            .preloader-logo-img {
+                height: 90px !important;
+            }
+            .footer-logo {
+                height: 60px !important;
+            }
+            .sidebar {
+                width: 260px !important;
+                left: -280px !important;
+                padding: 16px 14px !important;
+            }
+            .sidebar-nav a {
+                padding: 8px 12px !important;
+                font-size: 0.8rem !important;
+            }
+            .sidebar-logo img {
+                height: 32px !important;
+            }
+            .sidebar-logo-text {
+                font-size: 0.95rem !important;
+            }
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            .hero-description {
+                font-size: 1rem;
+            }
+            .hero-badge {
+                font-size: 0.6rem;
+                padding: 0.2rem 1rem;
+            }
+            .btn {
+                padding: 0.8rem 1.8rem;
+                font-size: 0.75rem;
+            }
+            .hero-stats {
+                gap: 1.5rem;
+            }
+            .stat-number {
+                font-size: 1.4rem;
+            }
+            .stat-label {
+                font-size: 0.65rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .section-subtitle {
+                font-size: 0.95rem;
+            }
+            .pillar-item {
+                padding: 1.5rem 1rem;
+            }
+            .pillar-title {
+                font-size: 1.1rem;
+            }
+            .pillar-description {
+                font-size: 0.9rem;
+            }
+            .testimonial-card {
+                padding: 1.5rem;
+            }
+            .testimonial-quote {
+                font-size: 0.95rem;
+            }
+            .counters {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.8rem;
+            }
+            .counter-item {
+                padding: 1rem 0.5rem;
+            }
+            .counter-item .number {
+                font-size: 2rem;
+            }
+            .newsletter-title {
+                font-size: 1.6rem;
+            }
+            .lang-switch {
+                font-size: 0.6rem;
+            }
+            .lang-link {
+                padding: 0.15rem 0.35rem;
+            }
+            .theme-toggle {
+                width: 34px;
+                height: 34px;
+                font-size: 0.85rem;
+            }
+            .hero-controls {
+                bottom: 1.5rem;
+            }
+            .hero-control-btn {
+                width: 8px;
+                height: 8px;
+            }
+            .hero-scroll {
+                bottom: 4rem;
+                font-size: 0.6rem;
+            }
+            .hero-scroll i {
+                font-size: 0.8rem;
+            }
+            .modal-container {
+                padding: 1.5rem;
+            }
+            .team-member-card {
+                width: 160px;
+            }
+            .team-member-photo {
+                width: 100px;
+                height: 100px;
+            }
+            .invest-card-new {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .menu-toggle {
+                top: 10px !important;
+                left: 10px !important;
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 0.95rem !important;
+                padding: 6px 8px !important;
+                border-radius: 8px !important;
+            }
+            .menu-toggle i {
+                font-size: 0.95rem !important;
+            }
+            .logo-img {
+                height: 40px !important;
+            }
+            .site-header.scrolled .logo-img {
+                height: 32px !important;
+            }
+            .site-header {
+                height: 58px !important;
+                padding-left: 55px !important;
+            }
+            .site-header.scrolled {
+                height: 50px !important;
+            }
+            .preloader-logo-img {
+                height: 70px !important;
+            }
+            .sidebar {
+                width: 240px !important;
+                left: -260px !important;
+                padding: 14px 12px !important;
+            }
+            .sidebar-nav a {
+                padding: 7px 10px !important;
+                font-size: 0.75rem !important;
+                gap: 10px !important;
+            }
+            .sidebar-nav a i {
+                font-size: 0.8rem !important;
+                width: 18px !important;
+            }
+            .sidebar-logo img {
+                height: 28px !important;
+            }
+            .sidebar-logo-text {
+                font-size: 0.85rem !important;
+                letter-spacing: 1px !important;
+            }
+            .sidebar-close {
+                font-size: 1rem !important;
+                top: 10px !important;
+                right: 10px !important;
+            }
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            .section-title {
+                font-size: 1.6rem;
+            }
+            .counters {
+                grid-template-columns: 1fr;
+            }
+            .lang-switch {
+                gap: 0.15rem;
+            }
+            .lang-link {
+                padding: 0.1rem 0.25rem;
+                font-size: 0.55rem;
+            }
+            .news-input {
+                padding: 0.8rem 1.2rem;
+            }
+            .team-member-card {
+                width: 140px;
+                padding: 1rem;
+            }
+            .team-member-photo {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
+        /* ============================================================
+           TEMA CLARO - CORREÇÕES
+           ============================================================ */
+        body.light-theme .hero-title {
+            color: #f2efe9 !important;
+        }
+        body.light-theme .hero-title em {
+            color: #c9a96e !important;
+        }
+        body.light-theme .hero-description {
+            color: #d5d0c8 !important;
+        }
+        body.light-theme .hero-badge {
+            color: #d5d0c8 !important;
+            background: rgba(0, 0, 0, 0.4) !important;
+            border-color: rgba(255, 255, 255, 0.15) !important;
+        }
+        body.light-theme .stat-number {
+            color: #c9a96e !important;
+        }
+        body.light-theme .stat-label {
+            color: #d5d0c8 !important;
+        }
+        body.light-theme .hero .btn-outline {
+            color: #f2efe9 !important;
+            border-color: rgba(255, 255, 255, 0.4) !important;
+        }
+        body.light-theme .hero .btn-outline:hover {
+            background: #c9a96e !important;
+            color: #0f0e0d !important;
+            border-color: #c9a96e !important;
+        }
+        body.light-theme .section-title,
+        body.light-theme .pillar-title,
+        body.light-theme .testimonial-quote,
+        body.light-theme .newsletter-title,
+        body.light-theme .footer-heading,
+        body.light-theme .team-member-card h3,
+        body.light-theme .process-item h3,
+        body.light-theme .invest-card-new h3,
+        body.light-theme .blog-card h3,
+        body.light-theme .modal-title {
+            color: #1a1816 !important;
+        }
+        body.light-theme .pillar-description,
+        body.light-theme .about-text p,
+        body.light-theme .testimonial-author,
+        body.light-theme .newsletter-description,
+        body.light-theme .footer-brand-description,
+        body.light-theme .contact-item span,
+        body.light-theme .contact-item a,
+        body.light-theme .footer-nav-list li a,
+        body.light-theme .process-item p,
+        body.light-theme .invest-card-desc,
+        body.light-theme .blog-card p,
+        body.light-theme .modal-body,
+        body.light-theme .stat-label,
+        body.light-theme .section-subtitle,
+        body.light-theme .quotation-form label,
+        body.light-theme .contact-form label,
+        body.light-theme .quotation-result p,
+        body.light-theme .i-stat span {
+            color: #4a4540 !important;
+        }
+        body.light-theme .pillar-item,
+        body.light-theme .testimonial-card,
+        body.light-theme .counter-item,
+        body.light-theme .team-member-card,
+        body.light-theme .invest-card-new {
+            background: #e5dfd6 !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+        body.light-theme .invest-card-new:hover {
+            border-color: #c9a96e !important;
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.1) !important;
+        }
+        body.light-theme .invest-card-icon-w {
+            background: rgba(201, 169, 110, 0.15) !important;
+            border-color: rgba(201, 169, 110, 0.3) !important;
+        }
+        body.light-theme .invest-stats-row {
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+        body.light-theme .invest-badge {
+            background: rgba(201, 169, 110, 0.1) !important;
+        }
+        body.light-theme .news-input,
+        body.light-theme .contact-form input,
+        body.light-theme .contact-form textarea,
+        body.light-theme .quotation-form input,
+        body.light-theme .quotation-form select {
+            background: rgba(0, 0, 0, 0.04) !important;
+            color: #1a1816 !important;
+            border-color: rgba(0, 0, 0, 0.12) !important;
+        }
+        body.light-theme .news-input:focus,
+        body.light-theme .contact-form input:focus,
+        body.light-theme .contact-form textarea:focus,
+        body.light-theme .quotation-form input:focus,
+        body.light-theme .quotation-form select:focus {
+            border-color: #c9a96e !important;
+        }
+        body.light-theme .news-input::placeholder,
+        body.light-theme .contact-form input::placeholder,
+        body.light-theme .contact-form textarea::placeholder,
+        body.light-theme .quotation-form input::placeholder {
+            color: #6b6560 !important;
+        }
+        body.light-theme .quotation-form select option {
+            background: #e5dfd6 !important;
+            color: #1a1816 !important;
+        }
+        body.light-theme .modal-container {
+            background: #e5dfd6 !important;
+        }
+        body.light-theme .site-footer {
+            background: #ede9e1 !important;
+        }
+        body.light-theme .footer-grid,
+        body.light-theme .footer-bottom {
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+        body.light-theme .footer-socials a,
+        body.light-theme .footer-bottom-links a,
+        body.light-theme .copy {
+            color: #4a4540 !important;
+        }
+        body.light-theme .footer-socials a:hover,
+        body.light-theme .footer-bottom-links a:hover {
+            color: #c9a96e !important;
+        }
+        body.light-theme .counter-item .number {
+            color: #c9a96e !important;
+        }
+        body.light-theme .counter-item .label {
+            color: #4a4540 !important;
+        }
+        body.light-theme .gold-line,
+        body.light-theme .gold-line-center {
+            background: #c9a96e !important;
+        }
+        body.light-theme .process-item h3 {
+            color: #1a1816 !important;
+        }
+        body.light-theme .process-item p {
+            color: #4a4540 !important;
+        }
+        body.light-theme .back-to-top {
+            background: #c9a96e !important;
+            color: #0f0e0d !important;
+        }
+        body.light-theme .whatsapp-float {
+            background: #25d366 !important;
+            color: #fff !important;
+        }
+        body.light-theme .theme-toggle {
+            color: #4a4540 !important;
+            border-color: rgba(0, 0, 0, 0.15) !important;
+        }
+        body.light-theme .theme-toggle:hover {
+            color: #c9a96e !important;
+            border-color: #c9a96e !important;
+        }
+        body.light-theme .lang-link {
+            color: #4a4540 !important;
+        }
+        body.light-theme .lang-link.active {
+            color: #c9a96e !important;
+            background: rgba(201, 169, 110, 0.15) !important;
+        }
+        body.light-theme .lang-sep {
+            color: rgba(0, 0, 0, 0.2) !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    PRELOADER
+    ============================================================ -->
+    <div id="preloader">
+        <div class="preloader-logo">
+            <img src="logoimperare.png" alt="IMPERARE" class="preloader-logo-img">
+        </div>
+        <div class="preloader-line"></div>
+        <div class="preloader-text">A carregar</div>
+    </div>
+
+    <!-- ============================================================
+    MENU TOGGLE - BOTÃO HAMBÚRGUER
+    ============================================================ -->
+    <button class="menu-toggle" id="sidebarToggle" aria-label="Abrir/fechar menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- ============================================================
+    SIDEBAR OVERLAY
+    ============================================================ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ============================================================
+    SIDEBAR - MENU LATERAL FLUTUANTE
+    ============================================================ -->
+    <nav class="sidebar" id="sidebar" aria-label="Navegação principal">
+        <button class="sidebar-close" id="sidebarClose" aria-label="Fechar menu">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <div class="sidebar-logo">
+            <img src="logoimperare.png" alt="IMPERARE">
+            <span class="sidebar-logo-text"><strong>IMPERARE</strong></span>
+        </div>
+
+        <div class="sidebar-nav">
+            <a href="#home" class="active">
+                <i class="fas fa-home"></i>
+                <span data-i18n="nav.home">Início</span>
+                <span class="nav-indicator"><i class="fas fa-chevron-right"></i></span>
+            </a>
+            <a href="#servicos">
+                <i class="fas fa-building"></i>
+                <span data-i18n="nav.servicos">Serviços</span>
+                <span class="nav-indicator"><i class="fas fa-chevron-right"></i></span>
+            </a>
+            <a href="#sobre">
+                <i class="fas fa-info-circle"></i>
+                <span data-i18n="nav.sobre">Sobre</span>
+                <span class="nav-indicator"><i class="fas fa-chevron-right"></i></span>
+            </a>
+            <a href="#equipa">
+                <i class="fas fa-users"></i>
+                <span data-i18n="nav.equipa">Equipa</span>
+                <span class="nav-indicator"><i class="fas fa-chevron-right"></i></span>
+            </a>
+            <a href="#process">
+                <i class="fas fa-project-diagram"></i>
+                <span data-i18n="nav.process">Processo</span>
+                <span class="nav-indicator"><i class="fas fa-chevron-right"></i></span>
+            </a>
+            <a href="#investment">
+                <i class="fas fa-chart-line"></i>
+                <span data-i18n="nav.investment">Investimento</span>
+                <span class="nav-indicator"><i class="fas fa-chevron-right"></i></span>
+            </a>
+            <a href="#depoimentos">
+                <i class="fas fa-star"></i>
+                <span data-i18n="nav.depoimentos">Depoimentos</span>
+                <span class="nav-indicator"><i class="fas fa-chevron-right"></i></span>
+            </a>
+            <a href="#blog">
+                <i class="fas fa-newspaper"></i>
+                <span data-i18n="nav.blog">Blog</span>
+                <span class="nav-indicator"><i class="fas fa-chevron-right"></i></span>
+            </a>
+            <a href="#contacto">
+                <i class="fas fa-envelope"></i>
+                <span data-i18n="nav.contacto">Contacto</span>
+                <span class="nav-indicator"><i class="fas fa-chevron-right"></i></span>
+            </a>
+            <a href="imoveis.html">
+                <i class="fas fa-building"></i>
+                <span>Imóveis</span>
+                <span class="nav-indicator"><i class="fas fa-chevron-right"></i></span>
+            </a>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-contact">
+                <a href="tel:+351927663721">
+                    <i class="fas fa-phone"></i>
+                    +351 927 663 721
+                </a>
+                <a href="mailto:imperareconstrutora@gmail.com">
+                    <i class="fas fa-envelope"></i>
+                    imperareconstrutora@gmail.com
+                </a>
+                <a href="https://www.instagram.com/imperareconstrutora" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                    @imperareconstrutora
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+    HEADER
+    ============================================================ -->
+    <header id="mainHeader" class="site-header">
+        <div class="header-container">
+            <a href="#home" class="logo-wrapper" aria-label="IMPERARE - Página inicial">
+                <img class="logo-img" src="logoimperare.png" alt="IMPERARE Construtora & Imobiliária">
+            </a>
+
+            <div class="header-actions">
+                <div class="lang-switch" id="langSwitch" role="group" aria-label="Selector de idioma">
+                    <a href="#" class="lang-link active" data-lang="pt" aria-label="Português">PT</a>
+                    <span class="lang-sep">|</span>
+                    <a href="#" class="lang-link" data-lang="es" aria-label="Español">ES</a>
+                    <span class="lang-sep">|</span>
+                    <a href="#" class="lang-link" data-lang="en" aria-label="English">EN</a>
+                    <span class="lang-sep">|</span>
+                    <a href="#" class="lang-link" data-lang="fr" aria-label="Français">FR</a>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema claro/escuro">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================
+    WHATSAPP FLOATING - LADO DIREITO INFERIOR
+    ============================================================ -->
+    <a href="https://wa.me/351927663721" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contactar via WhatsApp">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i>
+    </a>
+
+    <!-- ============================================================
+    BACK TO TOP - LADO ESQUERDO INFERIOR
+    ============================================================ -->
+    <button id="back-to-top-button" class="back-to-top" aria-label="Voltar ao topo">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- ============================================================
+    HERO - CARROSSEL
+    ============================================================ -->
+    <section class="hero" id="home" aria-label="Apresentação principal">
+        <div class="hero-slides-wrapper">
+            <div class="hero-slide active" data-slide="0" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&auto=format&fit=crop');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content container">
+                    <div class="hero-badge" data-i18n="hero.badge">Excelência em construção</div>
+                    <h1 class="hero-title"><span data-i18n="hero.title1">Construir é</span> <em data-i18n="hero.title2">imperar</em> <span data-i18n="hero.title3">com excelência.</span></h1>
+                    <p class="hero-description" data-i18n="hero.desc">Há mais de 20 anos a criar residências de alto padrão em Portugal. Cada projeto é uma assinatura de luxo, minimalismo e funcionalidade.</p>
+                    <a href="#servicos" class="btn btn-outline" data-i18n="hero.btn">Ver projetos</a>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" data-i18n="stats.years">20+</span>
+                            <span class="stat-label">Anos de experiência</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" data-i18n="stats.projects">80+</span>
+                            <span class="stat-label">Projetos concluídos</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" data-i18n="stats.satisfaction">98%</span>
+                            <span class="stat-label">Satisfação dos clientes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-slide" data-slide="1" style="background-image: url('https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1600&auto=format&fit=crop');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content container">
+                    <div class="hero-badge" data-i18n="hero.badge2">Arquitetura de autor</div>
+                    <h1 class="hero-title"><span data-i18n="hero.title4">Design</span> <em data-i18n="hero.title5">atemporal</em> <span data-i18n="hero.title6">para a vida moderna.</span></h1>
+                    <p class="hero-description" data-i18n="hero.desc2">Espaços que combinam estética, funcionalidade e inovação. Projetos assinados por arquitetos renomados.</p>
+                    <a href="#servicos" class="btn btn-outline" data-i18n="hero.btn">Ver projetos</a>
+                </div>
+            </div>
+
+            <div class="hero-slide" data-slide="2" style="background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&auto=format&fit=crop');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content container">
+                    <div class="hero-badge" data-i18n="hero.badge3">Luxo e sofisticação</div>
+                    <h1 class="hero-title"><span data-i18n="hero.title7">Onde o</span> <em data-i18n="hero.title8">luxo</em> <span data-i18n="hero.title9">encontra a natureza.</span></h1>
+                    <p class="hero-description" data-i18n="hero.desc3">Refúgios exclusivos que harmonizam arquitetura e paisagem. Experiências únicas em Portugal.</p>
+                    <a href="#servicos" class="btn btn-outline" data-i18n="hero.btn">Ver projetos</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-controls" role="tablist" aria-label="Controlos do carrossel">
+            <button class="hero-control-btn active" data-slide="0" role="tab" aria-label="Slide 1" aria-selected="true"></button>
+            <button class="hero-control-btn" data-slide="1" role="tab" aria-label="Slide 2" aria-selected="false"></button>
+            <button class="hero-control-btn" data-slide="2" role="tab" aria-label="Slide 3" aria-selected="false"></button>
+        </div>
+
+        <div class="hero-scroll" aria-hidden="true">
+            <span data-i18n="hero.scroll">Scroll</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    SERVIÇOS
+    ============================================================ -->
+    <section class="pillars" id="servicos" aria-label="Nossos serviços">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="servicos.title">Excelência em <span>cada detalhe</span></h2>
+                <div class="gold-line"></div>
+                <p class="section-subtitle" data-i18n="servicos.subtitle">Soluções integradas que transformam sonhos em realidade, com a qualidade e sofisticação que a IMPERARE oferece.</p>
+            </div>
+
+            <div class="pillar-grid">
+                <article class="pillar-item">
+                    <div class="pillar-icon"><i class="fas fa-building"></i></div>
+                    <h3 class="pillar-title" data-i18n="servicos.item1.title">Construção &amp; Incorporação</h3>
+                    <p class="pillar-description" data-i18n="servicos.item1.desc">Da concepção à entrega, gerimos todas as fases com materiais nobres e tecnologia de ponta. Entregamos empreendimentos que são referência em Lisboa e no Algarve.</p>
+                </article>
+
+                <article class="pillar-item">
+                    <div class="pillar-icon"><i class="fas fa-chess-queen"></i></div>
+                    <h3 class="pillar-title" data-i18n="servicos.item2.title">Consultoria Executiva</h3>
+                    <p class="pillar-description" data-i18n="servicos.item2.desc">Acompanhamento estratégico personalizado: escolha de terreno, viabilidade, projeto e execução. Decisões seguras para resultados superiores.</p>
+                </article>
+
+                <article class="pillar-item">
+                    <div class="pillar-icon"><i class="fas fa-drafting-compass"></i></div>
+                    <h3 class="pillar-title" data-i18n="servicos.item3.title">Arquitetura &amp; Interiores</h3>
+                    <p class="pillar-description" data-i18n="servicos.item3.desc">Espaços que combinam estética atemporal e funcionalidade. Em parceria com arquitetos de renome, criamos ambientes que contam histórias e emocionam.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    SOBRE + CONTADORES
+    ============================================================ -->
+    <section class="about" id="sobre" aria-label="Sobre a IMPERARE">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-text">
+                    <h2 class="section-title" data-i18n="sobre.title">Mais que construir: <span>criamos tendências</span> de alto padrão.</h2>
+                    <div class="gold-line"></div>
+                    <p data-i18n="sobre.p1">Com mais de 20 anos de experiência no mercado de alto padrão, a IMPERARE é especializada em criar construções atemporais, que combinam arquitetura autoral, materiais nobres e soluções sob medida. Cada projeto é cuidadosamente planejado para proporcionar bem-estar, funcionalidade e conforto, com um design que harmoniza estética e precisão.</p>
+                    <p data-i18n="sobre.p2">Nosso compromisso com a excelência se reflete em um processo único: mais do que empreendimentos, a IMPERARE transforma sonhos em experiências excepcionais e personalizadas.</p>
+                </div>
+
+                <div class="counters" aria-label="Estatísticas da empresa">
+                    <div class="counter-item">
+                        <span class="number" data-target="20">0</span>
+                        <span class="label" data-i18n="counters.label1">Anos de carreira</span>
+                    </div>
+                    <div class="counter-item">
+                        <span class="number" data-target="80">0</span>
+                        <span class="label" data-i18n="counters.label2">Projetos concluídos</span>
+                    </div>
+                    <div class="counter-item">
+                        <span class="number" data-target="98">0</span>
+                        <span class="label" data-i18n="counters.label3">% Satisfação</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    EQUIPA - COM 3 MEMBROS EM LINHA
+    ============================================================ -->
+    <section class="team-section" id="equipa" aria-label="Equipa IMPERARE">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">A nossa <span>equipa</span></h2>
+                <div class="gold-line-center"></div>
+                <p class="section-subtitle" style="margin:0 auto;">Profissionais dedicados a transformar os seus sonhos em realidade.</p>
+            </div>
+            <div class="team-grid" id="teamGrid">
+                <!-- Os membros serão carregados dinamicamente via JavaScript -->
+                <article class="team-member-card">
+                    <div class="team-member-photo">
+                        <img src="https://ui-avatars.com/api/?name=Thiago+Silva&background=c9a96e&color=fff&size=128" alt="Thiago Silva">
+                    </div>
+                    <h3>Thiago Silva</h3>
+                    <p>Fundador &amp; CEO</p>
+                </article>
+                <article class="team-member-card">
+                    <div class="team-member-photo">
+                        <img src="https://ui-avatars.com/api/?name=Diogo+Costa&background=c9a96e&color=fff&size=128" alt="Diogo Costa">
+                    </div>
+                    <h3>Diogo Costa</h3>
+                    <p>Sócio &amp; Diretor Comercial</p>
+                </article>
+                <article class="team-member-card">
+                    <div class="team-member-photo">
+                        <img src="https://ui-avatars.com/api/?name=Ana+Ferreira&background=c9a96e&color=fff&size=128" alt="Ana Ferreira">
+                    </div>
+                    <h3>Ana Ferreira</h3>
+                    <p>Arquiteta Sénior</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    PROCESSO - TIMELINE ANIMADA
+    ============================================================ -->
+    <section id="process" class="process-section" aria-label="Nosso processo">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">O nosso <span>processo</span></h2>
+                <div class="gold-line-center"></div>
+                <p class="section-subtitle" style="margin:0 auto;">Um método transparente e eficiente para garantir a excelência em cada projeto.</p>
+            </div>
+            <div class="process-timeline">
+                <div class="process-item">
+                    <div class="process-icon-wrap">
+                        <span class="process-badge">01</span>
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <p class="process-phase-label">Fase 1</p>
+                    <h3>Consulta</h3>
+                    <p>Ouvimos os seus objetivos e sonhos para entender o projeto ideal.</p>
+                </div>
+                <div class="process-connector"></div>
+                <div class="process-item">
+                    <div class="process-icon-wrap">
+                        <span class="process-badge">02</span>
+                        <i class="fas fa-drafting-compass"></i>
+                    </div>
+                    <p class="process-phase-label">Fase 2</p>
+                    <h3>Planeamento</h3>
+                    <p>Projeto técnico, materiais selecionados e prazos rigorosos definidos.</p>
+                </div>
+                <div class="process-connector"></div>
+                <div class="process-item">
+                    <div class="process-icon-wrap">
+                        <span class="process-badge">03</span>
+                        <i class="fas fa-hard-hat"></i>
+                    </div>
+                    <p class="process-phase-label">Fase 3</p>
+                    <h3>Execução</h3>
+                    <p>Construímos com materiais de excelência e supervisão permanente.</p>
+                </div>
+                <div class="process-connector"></div>
+                <div class="process-item">
+                    <div class="process-icon-wrap">
+                        <span class="process-badge">04</span>
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <p class="process-phase-label">Fase 4</p>
+                    <h3>Entrega</h3>
+                    <p>Chave na mão — com garantia e suporte pós-obra incluídos.</p>
+                </div>
+            </div>
+        </div>
+        <script>
+        (function(){
+            var s = document.getElementById('process');
+            var items = s ? s.querySelectorAll('.process-item') : [];
+            function chk() {
+                var r = s ? s.getBoundingClientRect() : null;
+                if (r && r.top < window.innerHeight * 0.85) {
+                    s.classList.add('in-view');
+                    items.forEach(function(el){ el.classList.add('visible'); });
+                    window.removeEventListener('scroll', chk);
+                }
+            }
+            window.addEventListener('scroll', chk, {passive: true});
+            chk();
+        })();
+        </script>
+    </section>
+
+    <!-- ============================================================
+    INVESTIMENTO IMOBILIÁRIO - CARDS RICOS
+    ============================================================ -->
+    <section id="investment" class="investment-section" aria-label="Investimento Imobiliário">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Investimento <span>Imobiliário</span></h2>
+                <div class="gold-line-center"></div>
+                <p class="section-subtitle" style="margin:0 auto;">Oportunidades exclusivas no mercado imobiliário de alto padrão.</p>
+            </div>
+            <div class="invest-grid" id="investGrid">
+                <!-- Os imóveis serão carregados dinamicamente via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    SIMULADOR DE ORÇAMENTO
+    ============================================================ -->
+    <section id="quotation" class="quotation-section" aria-label="Simulador de Orçamento">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Simulador de <span>Orçamento</span></h2>
+                <div class="gold-line-center"></div>
+                <p class="section-subtitle" style="margin:0 auto;">Receba uma estimativa personalizada para o seu projeto.</p>
+            </div>
+            <form id="quotation-form" class="quotation-form">
+                <div class="form-group">
+                    <label for="workType" data-i18n="quotation.workType">Tipo de Obra</label>
+                    <select id="workType" name="workType">
+                        <option value="" data-i18n="quotation.select">Selecione...</option>
+                        <option value="construcao" data-i18n="quotation.construcao">Construção Nova</option>
+                        <option value="reforma" data-i18n="quotation.reforma">Reforma</option>
+                        <option value="ampliacao" data-i18n="quotation.ampliacao">Ampliação</option>
+                        <option value="interiores" data-i18n="quotation.interiores">Design de Interiores</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="area" data-i18n="quotation.area">Área (m²)</label>
+                    <input type="number" id="area" name="area" placeholder="Ex: 150" min="10">
+                </div>
+                <div class="form-group">
+                    <label for="finish" data-i18n="quotation.finish">Acabamento</label>
+                    <select id="finish" name="finish">
+                        <option value="" data-i18n="quotation.select">Selecione...</option>
+                        <option value="basico" data-i18n="quotation.basico">Básico</option>
+                        <option value="medio" data-i18n="quotation.medio">Médio</option>
+                        <option value="luxo" data-i18n="quotation.luxo">Luxo</option>
+                        <option value="premium" data-i18n="quotation.premium">Premium</option>
+                    </select>
+                </div>
+                <div class="form-group" style="display:flex;align-items:flex-end;">
+                    <button type="submit" class="btn btn-gold" style="width:100%;" data-i18n="quotation.btn">Calcular Orçamento</button>
+                </div>
+            </form>
+            <div id="quotation-result" class="quotation-result" style="display:none;"></div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    DEPOIMENTOS
+    ============================================================ -->
+    <section class="testimonial" id="depoimentos" aria-label="Depoimentos de clientes">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title" data-i18n="depoimentos.title">O que os <span>nossos clientes</span> dizem</h2>
+                <div class="gold-line-center"></div>
+            </div>
+
+            <div class="testimonial-grid">
+                <article class="testimonial-card">
+                    <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+                    <blockquote class="testimonial-quote" data-i18n="depoimentos.quote1">A IMPERARE transformou o nosso sonho numa casa que respira luz e sofisticação. Cada detalhe foi pensado com uma sensibilidade rara. O processo foi tão fluido quanto o resultado final.</blockquote>
+                    <cite class="testimonial-author">
+                        <strong data-i18n="depoimentos.author1">— M. Loureiro</strong>,
+                        <span data-i18n="depoimentos.role1">CFO Grupo Atlântico</span>
+                    </cite>
+                </article>
+
+                <article class="testimonial-card">
+                    <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+                    <blockquote class="testimonial-quote" data-i18n="depoimentos.quote2">Contratámos a IMPERARE para a reforma da nossa casa de família e o resultado superou todas as expectativas. Profissionalismo, pontualidade e um design impecável. Recomendamos sem reservas.</blockquote>
+                    <cite class="testimonial-author">
+                        <strong data-i18n="depoimentos.author2">— A. Rossato</strong>,
+                        <span data-i18n="depoimentos.role2">CEO Deloitte Portugal</span>
+                    </cite>
+                </article>
+
+                <article class="testimonial-card">
+                    <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+                    <blockquote class="testimonial-quote" data-i18n="depoimentos.quote3">Uma equipa que entende a alma de uma casa. A IMPERARE não construiu apenas uma residência, criou um refúgio que nos acolhe e inspira todos os dias. Gratidão eterna.</blockquote>
+                    <cite class="testimonial-author">
+                        <strong data-i18n="depoimentos.author3">— L. Rodrigues</strong>,
+                        <span data-i18n="depoimentos.role3">Cliente particular</span>
+                    </cite>
+                </article>
+
+                <article class="testimonial-card">
+                    <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+                    <blockquote class="testimonial-quote" data-i18n="depoimentos.quote4">Desde o primeiro esboço até à entrega das chaves, a IMPERARE demonstrou uma atenção aos detalhes que raramente se vê. Um parceiro de confiança para projetos de alto padrão.</blockquote>
+                    <cite class="testimonial-author">
+                        <strong data-i18n="depoimentos.author4">— F. Mendes</strong>,
+                        <span data-i18n="depoimentos.role4">Arquiteto parceiro</span>
+                    </cite>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    BLOG
+    ============================================================ -->
+    <section id="blog" class="blog-section" aria-label="Blog">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Blog <span>IMPERARE</span></h2>
+                <div class="gold-line-center"></div>
+                <p class="section-subtitle" style="margin:0 auto;">Fique por dentro das últimas tendências em arquitetura e construção.</p>
+            </div>
+            <div class="blog-grid">
+                <article class="blog-card">
+                    <div class="blog-image"></div>
+                    <div class="blog-content">
+                        <h3>Tendências em Arquitetura para 2026</h3>
+                        <p>Descubra as principais tendências que vão marcar o mercado imobiliário este ano.</p>
+                        <a href="#" class="btn btn-outline" style="padding:0.5rem 1.5rem;font-size:0.7rem;">Ler mais</a>
+                    </div>
+                </article>
+                <article class="blog-card">
+                    <div class="blog-image"></div>
+                    <div class="blog-content">
+                        <h3>Sustentabilidade na Construção</h3>
+                        <p>Como a IMPERARE integra práticas sustentáveis em todos os seus projetos.</p>
+                        <a href="#" class="btn btn-outline" style="padding:0.5rem 1.5rem;font-size:0.7rem;">Ler mais</a>
+                    </div>
+                </article>
+                <article class="blog-card">
+                    <div class="blog-image"></div>
+                    <div class="blog-content">
+                        <h3>Investimento Imobiliário em Portugal</h3>
+                        <p>Análise do mercado e oportunidades para investidores exigentes.</p>
+                        <a href="#" class="btn btn-outline" style="padding:0.5rem 1.5rem;font-size:0.7rem;">Ler mais</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    NEWSLETTER
+    ============================================================ -->
+    <section class="newsletter" id="contacto" aria-label="Newsletter e contacto">
+        <div class="container">
+            <div class="newsletter-wrapper">
+                <div class="newsletter-info">
+                    <h2 class="newsletter-title" data-i18n="newsletter.title">Receba <span>novidades</span> da IMPERARE</h2>
+                    <p class="newsletter-description" data-i18n="newsletter.desc">Arquitetura, lançamentos e tendências de luxo diretamente no seu e-mail.</p>
+                </div>
+                <form class="news-form" id="newsletterForm" aria-label="Formulário de subscrição">
+                    <input type="email" class="news-input" id="newsletterEmail" placeholder="O seu melhor e-mail" data-i18n-placeholder="newsletter.placeholder" required aria-label="Endereço de e-mail">
+                    <button type="submit" class="btn btn-gold news-btn" data-i18n="newsletter.btn">Subscrever</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    CONTACTO - FALE CONOSCO
+    ============================================================ -->
+    <section id="contact" class="contact-section" aria-label="Contacto">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Fale <span>Conosco</span></h2>
+                <div class="gold-line-center"></div>
+                <p class="section-subtitle" style="margin:0 auto;">Estamos disponíveis para responder a todas as suas questões.</p>
+            </div>
+            <div class="contact-container">
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" placeholder="Nome" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" placeholder="Telefone">
+                    </div>
+                    <div class="form-group" style="grid-column:1/-1;">
+                        <textarea placeholder="Mensagem" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-gold">Enviar Mensagem</button>
+                </form>
+                <div class="contact-map">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3112.223348642208!2d-9.341843484866108!3d38.73050867960358!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd1ecb4d4e6f3b7f%3A0x7b8f8a8f8a8f8a8f!2sS%C3%A3o%20Domingos%20de%20Rana!5e0!3m2!1spt-PT!2spt!4v1700000000000" width="100%" height="100%" style="border:0;border-radius:8px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#home" class="logo-wrapper">
+                        <img class="logo-img footer-logo" src="logoimperare.png" alt="IMPERARE">
+                    </a>
+                    <p class="footer-brand-description" data-i18n="footer.brand.desc">Construção e incorporação de alto padrão em Portugal. Transformamos espaços em experiências de luxo e funcionalidade.</p>
+                </div>
+
+                <div class="footer-contacts">
+                    <h4 class="footer-heading" data-i18n="footer.contacts.title">Contactos</h4>
+                    <ul class="contact-list">
+                        <li class="contact-item">
+                            <i class="fab fa-instagram" aria-hidden="true"></i>
+                            <a href="https://www.instagram.com/imperareconstrutora" target="_blank" rel="noopener noreferrer" data-i18n="footer.contacts.instagram">@imperareconstrutora</a>
+                        </li>
+                        <li class="contact-item">
+                            <i class="fas fa-envelope" aria-hidden="true"></i>
+                            <a href="mailto:imperareconstrutora@gmail.com" data-i18n="footer.contacts.email">imperareconstrutora@gmail.com</a>
+                        </li>
+                        <li class="contact-item">
+                            <i class="fas fa-map-pin" aria-hidden="true"></i>
+                            <span data-i18n="footer.contacts.address">São Domingos de Rana, Lisboa</span>
+                        </li>
+                        <li class="contact-item">
+                            <i class="fas fa-phone" aria-hidden="true"></i>
+                            <a href="tel:+351927663721" data-i18n="footer.contacts.phone">+351 927 663 721</a>
+                        </li>
+                        <li class="contact-item">
+                            <i class="fab fa-whatsapp" aria-hidden="true"></i>
+                            <a href="https://wa.me/351927663721" target="_blank" rel="noopener noreferrer" data-i18n="footer.contacts.whatsapp">WhatsApp</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    <span class="copy" data-i18n="footer.copy">&copy; 2026 IMPERARE · Construção e Incorporação, Lda. Todos os direitos reservados.</span>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://www.instagram.com/imperareconstrutora" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================================
+    MODAL - ÁREA CLIENTE
+    ============================================================ -->
+    <div class="modal" id="clientLoginModal" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle" hidden>
+        <div class="modal-overlay-bg" data-modal-close></div>
+        <div class="modal-container">
+            <button class="modal-close" data-modal-close aria-label="Fechar modal">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-content">
+                <h2 id="loginModalTitle" class="modal-title">Área Cliente</h2>
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <input type="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" placeholder="Senha" required>
+                    </div>
+                    <button type="submit" class="btn btn-gold" style="width:100%;">Entrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    MODAL - GENÉRICO
+    ============================================================ -->
+    <div class="modal" id="genericModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+        <div class="modal-overlay-bg" data-modal-close></div>
+        <div class="modal-container">
+            <button class="modal-close" data-modal-close aria-label="Fechar modal">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-content">
+                <h2 id="modalTitle" class="modal-title">Título do Modal</h2>
+                <p class="modal-body">Conteúdo do modal aqui.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    SCRIPTS
+    ============================================================ -->
+    <script>
+        // ============================================================
+        // SIDEBAR CONTROLS
+        // ============================================================
+        (function() {
+            'use strict';
+
+            var sidebar = document.getElementById('sidebar');
+            var overlay = document.getElementById('sidebarOverlay');
+            var toggleBtn = document.getElementById('sidebarToggle');
+            var closeBtn = document.getElementById('sidebarClose');
+            var navLinks = sidebar ? sidebar.querySelectorAll('.sidebar-nav a') : [];
+
+            function openSidebar() {
+                if (sidebar) sidebar.classList.add('open');
+                if (overlay) overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeSidebar() {
+                if (sidebar) sidebar.classList.remove('open');
+                if (overlay) overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            function toggleSidebar() {
+                if (sidebar && sidebar.classList.contains('open')) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
+            }
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', toggleSidebar);
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeSidebar);
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', closeSidebar);
+            }
+
+            navLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    navLinks.forEach(function(l) { l.classList.remove('active'); });
+                    this.classList.add('active');
+                    closeSidebar();
+                });
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+                    closeSidebar();
+                }
+            });
+
+            var sections = document.querySelectorAll('section[id]');
+            if (sections.length && navLinks.length) {
+                window.addEventListener('scroll', function() {
+                    var current = '';
+                    sections.forEach(function(section) {
+                        var sectionTop = section.offsetTop - 200;
+                        if (window.pageYOffset >= sectionTop) {
+                            current = section.getAttribute('id');
+                        }
+                    });
+
+                    navLinks.forEach(function(link) {
+                        link.classList.remove('active');
+                        var href = link.getAttribute('href');
+                        if (href === '#' + current) {
+                            link.classList.add('active');
+                        }
+                    });
+                }, { passive: true });
+            }
+
+            console.log('✅ Sidebar inicializada com sucesso!');
+        })();
+
+        // ============================================================
+        // TEMA AUTOMÁTICO BASEADO NO HORÁRIO
+        // ============================================================
+        (function() {
+            'use strict';
+
+            function setThemeBasedOnTime() {
+                var now = new Date();
+                var hours = now.getHours();
+                var isDaytime = hours >= 6 && hours < 18;
+
+                var userTheme = localStorage.getItem('imperare-theme');
+                if (userTheme) {
+                    return;
+                }
+
+                if (isDaytime) {
+                    document.body.classList.add('light-theme');
+                    var icon = document.querySelector('#themeToggle i');
+                    if (icon) icon.className = 'fas fa-sun';
+                } else {
+                    document.body.classList.remove('light-theme');
+                    var icon = document.querySelector('#themeToggle i');
+                    if (icon) icon.className = 'fas fa-moon';
+                }
+            }
+
+            setThemeBasedOnTime();
+
+            setInterval(function() {
+                if (!localStorage.getItem('imperare-theme')) {
+                    setThemeBasedOnTime();
+                }
+            }, 60000);
+
+            console.log('🌓 Tema automático baseado no horário ativado!');
+        })();
+
+        // ============================================================
+        // TEMA MANUAL
+        // ============================================================
+        (function() {
+            var themeToggle = document.getElementById('themeToggle');
+            var themeIcon = themeToggle ? themeToggle.querySelector('i') : null;
+
+            if (!themeToggle || !themeIcon) return;
+
+            var savedTheme = localStorage.getItem('imperare-theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                themeIcon.className = 'fas fa-sun';
+            } else if (savedTheme === 'dark') {
+                document.body.classList.remove('light-theme');
+                themeIcon.className = 'fas fa-moon';
+            }
+
+            themeToggle.addEventListener('click', function() {
+                var isLight = document.body.classList.toggle('light-theme');
+                themeIcon.className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+                localStorage.setItem('imperare-theme', isLight ? 'light' : 'dark');
+                console.log('🌓 Tema alterado para: ' + (isLight ? 'Claro' : 'Escuro'));
+            });
+        })();
+
+        // ============================================================
+        // SISTEMA DE TRADUÇÕES - COMPLETO
+        // ============================================================
+        (function() {
+            'use strict';
+
+            var translations = {
+                pt: {
+                    'nav.home': 'Início',
+                    'nav.servicos': 'Serviços',
+                    'nav.sobre': 'Sobre',
+                    'nav.equipa': 'Equipa',
+                    'nav.process': 'Processo',
+                    'nav.investment': 'Investimento',
+                    'nav.depoimentos': 'Depoimentos',
+                    'nav.blog': 'Blog',
+                    'nav.contacto': 'Contacto',
+                    'hero.badge': 'Excelência em construção',
+                    'hero.title1': 'Construir é',
+                    'hero.title2': 'imperar',
+                    'hero.title3': 'com excelência.',
+                    'hero.desc': 'Há mais de 20 anos a criar residências de alto padrão em Portugal. Cada projeto é uma assinatura de luxo, minimalismo e funcionalidade.',
+                    'hero.btn': 'Ver projetos',
+                    'hero.scroll': 'Scroll',
+                    'hero.badge2': 'Arquitetura de autor',
+                    'hero.title4': 'Design',
+                    'hero.title5': 'atemporal',
+                    'hero.title6': 'para a vida moderna.',
+                    'hero.desc2': 'Espaços que combinam estética, funcionalidade e inovação. Projetos assinados por arquitetos renomados.',
+                    'hero.badge3': 'Luxo e sofisticação',
+                    'hero.title7': 'Onde o',
+                    'hero.title8': 'luxo',
+                    'hero.title9': 'encontra a natureza.',
+                    'hero.desc3': 'Refúgios exclusivos que harmonizam arquitetura e paisagem. Experiências únicas em Portugal.',
+                    'stats.years': '20+',
+                    'stats.projects': '80+',
+                    'stats.satisfaction': '98%',
+                    'servicos.title': 'Excelência em <span>cada detalhe</span>',
+                    'servicos.subtitle': 'Soluções integradas que transformam sonhos em realidade, com a qualidade e sofisticação que a IMPERARE oferece.',
+                    'servicos.item1.title': 'Construção & Incorporação',
+                    'servicos.item1.desc': 'Da concepção à entrega, gerimos todas as fases com materiais nobres e tecnologia de ponta. Entregamos empreendimentos que são referência em Lisboa e no Algarve.',
+                    'servicos.item2.title': 'Consultoria Executiva',
+                    'servicos.item2.desc': 'Acompanhamento estratégico personalizado: escolha de terreno, viabilidade, projeto e execução. Decisões seguras para resultados superiores.',
+                    'servicos.item3.title': 'Arquitetura & Interiores',
+                    'servicos.item3.desc': 'Espaços que combinam estética atemporal e funcionalidade. Em parceria com arquitetos de renome, criamos ambientes que contam histórias e emocionam.',
+                    'sobre.title': 'Mais que construir: <span>criamos tendências</span> de alto padrão.',
+                    'sobre.p1': 'Com mais de 20 anos de experiência no mercado de alto padrão, a IMPERARE é especializada em criar construções atemporais, que combinam arquitetura autoral, materiais nobres e soluções sob medida. Cada projeto é cuidadosamente planejado para proporcionar bem-estar, funcionalidade e conforto, com um design que harmoniza estética e precisão.',
+                    'sobre.p2': 'Nosso compromisso com a excelência se reflete em um processo único: mais do que empreendimentos, a IMPERARE transforma sonhos em experiências excepcionais e personalizadas.',
+                    'counters.label1': 'Anos de carreira',
+                    'counters.label2': 'Projetos concluídos',
+                    'counters.label3': '% Satisfação',
+                    'depoimentos.title': 'O que os <span>nossos clientes</span> dizem',
+                    'depoimentos.quote1': 'A IMPERARE transformou o nosso sonho numa casa que respira luz e sofisticação. Cada detalhe foi pensado com uma sensibilidade rara. O processo foi tão fluido quanto o resultado final.',
+                    'depoimentos.author1': '— M. Loureiro',
+                    'depoimentos.role1': 'CFO Grupo Atlântico',
+                    'depoimentos.quote2': 'Contratámos a IMPERARE para a reforma da nossa casa de família e o resultado superou todas as expectativas. Profissionalismo, pontualidade e um design impecável. Recomendamos sem reservas.',
+                    'depoimentos.author2': '— A. Rossato',
+                    'depoimentos.role2': 'CEO Deloitte Portugal',
+                    'depoimentos.quote3': 'Uma equipa que entende a alma de uma casa. A IMPERARE não construiu apenas uma residência, criou um refúgio que nos acolhe e inspira todos os dias. Gratidão eterna.',
+                    'depoimentos.author3': '— L. Rodrigues',
+                    'depoimentos.role3': 'Cliente particular',
+                    'depoimentos.quote4': 'Desde o primeiro esboço até à entrega das chaves, a IMPERARE demonstrou uma atenção aos detalhes que raramente se vê. Um parceiro de confiança para projetos de alto padrão.',
+                    'depoimentos.author4': '— F. Mendes',
+                    'depoimentos.role4': 'Arquiteto parceiro',
+                    'newsletter.title': 'Receba <span>novidades</span> da IMPERARE',
+                    'newsletter.desc': 'Arquitetura, lançamentos e tendências de luxo diretamente no seu e-mail.',
+                    'newsletter.placeholder': 'O seu melhor e-mail',
+                    'newsletter.btn': 'Subscrever',
+                    'footer.brand.desc': 'Construção e incorporação de alto padrão em Portugal. Transformamos espaços em experiências de luxo e funcionalidade.',
+                    'footer.contacts.title': 'Contactos',
+                    'footer.contacts.instagram': '@imperareconstrutora',
+                    'footer.contacts.email': 'imperareconstrutora@gmail.com',
+                    'footer.contacts.address': 'São Domingos de Rana, Lisboa',
+                    'footer.contacts.phone': '+351 927 663 721',
+                    'footer.contacts.whatsapp': 'WhatsApp',
+                    'footer.copy': '© 2026 IMPERARE · Construção e Incorporação, Lda. Todos os direitos reservados.',
+                    'quotation.workType': 'Tipo de Obra',
+                    'quotation.select': 'Selecione...',
+                    'quotation.construcao': 'Construção Nova',
+                    'quotation.reforma': 'Reforma',
+                    'quotation.ampliacao': 'Ampliação',
+                    'quotation.interiores': 'Design de Interiores',
+                    'quotation.area': 'Área (m²)',
+                    'quotation.finish': 'Acabamento',
+                    'quotation.basico': 'Básico',
+                    'quotation.medio': 'Médio',
+                    'quotation.luxo': 'Luxo',
+                    'quotation.premium': 'Premium',
+                    'quotation.btn': 'Calcular Orçamento'
+                },
+                es: {
+                    'nav.home': 'Inicio',
+                    'nav.servicos': 'Servicios',
+                    'nav.sobre': 'Sobre',
+                    'nav.equipa': 'Equipo',
+                    'nav.process': 'Proceso',
+                    'nav.investment': 'Inversión',
+                    'nav.depoimentos': 'Testimonios',
+                    'nav.blog': 'Blog',
+                    'nav.contacto': 'Contacto',
+                    'hero.badge': 'Excelencia en construcción',
+                    'hero.title1': 'Construir es',
+                    'hero.title2': 'imperar',
+                    'hero.title3': 'con excelencia.',
+                    'hero.desc': 'Más de 20 años creando residencias de alto estándar en Portugal. Cada proyecto es una firma de lujo, minimalismo y funcionalidad.',
+                    'hero.btn': 'Ver proyectos',
+                    'hero.scroll': 'Desplazar',
+                    'hero.badge2': 'Arquitectura de autor',
+                    'hero.title4': 'Diseño',
+                    'hero.title5': 'atemporal',
+                    'hero.title6': 'para la vida moderna.',
+                    'hero.desc2': 'Espacios que combinan estética, funcionalidad e innovación. Proyectos firmados por arquitectos renombrados.',
+                    'hero.badge3': 'Lujo y sofisticación',
+                    'hero.title7': 'Donde el',
+                    'hero.title8': 'lujo',
+                    'hero.title9': 'encuentra la naturaleza.',
+                    'hero.desc3': 'Refugios exclusivos que armonizan arquitectura y paisaje. Experiencias únicas en Portugal.',
+                    'stats.years': '20+',
+                    'stats.projects': '80+',
+                    'stats.satisfaction': '98%',
+                    'servicos.title': 'Excelencia en <span>cada detalle</span>',
+                    'servicos.subtitle': 'Soluciones integradas que transforman sueños en realidad, con la calidad y sofisticación que IMPERARE ofrece.',
+                    'servicos.item1.title': 'Construcción e Incorporación',
+                    'servicos.item1.desc': 'Desde la concepción hasta la entrega, gestionamos todas las fases con materiales nobles y tecnología de punta. Entregamos proyectos que son referencia en Lisboa y el Algarve.',
+                    'servicos.item2.title': 'Consultoría Ejecutiva',
+                    'servicos.item2.desc': 'Acompañamiento estratégico personalizado: elección de terreno, viabilidad, proyecto y ejecución. Decisiones seguras para resultados superiores.',
+                    'servicos.item3.title': 'Arquitectura e Interiores',
+                    'servicos.item3.desc': 'Espacios que combinan estética atemporal y funcionalidad. En colaboración con arquitectos de renombre, creamos ambientes que cuentan historias y emocionan.',
+                    'sobre.title': 'Más que construir: <span>creamos tendencias</span> de alto estándar.',
+                    'sobre.p1': 'Con más de 20 años de experiencia en el mercado de alto estándar, IMPERARE se especializa en crear construcciones atemporales, que combinan arquitectura autoral, materiales nobles y soluciones a medida. Cada proyecto está cuidadosamente planificado para proporcionar bienestar, funcionalidad y confort, con un diseño que armoniza estética y precisión.',
+                    'sobre.p2': 'Nuestro compromiso con la excelencia se refleja en un proceso único: más que emprendimientos, IMPERARE transforma sueños en experiencias excepcionales y personalizadas.',
+                    'counters.label1': 'Años de carrera',
+                    'counters.label2': 'Proyectos completados',
+                    'counters.label3': '% Satisfacción',
+                    'depoimentos.title': 'Lo que <span>nuestros clientes</span> dicen',
+                    'depoimentos.quote1': 'IMPERARE transformó nuestro sueño en una casa que respira luz y sofisticación. Cada detalle fue pensado con una sensibilidad rara. El proceso fue tan fluido como el resultado final.',
+                    'depoimentos.author1': '— M. Loureiro',
+                    'depoimentos.role1': 'CFO Grupo Atlántico',
+                    'depoimentos.quote2': 'Contratamos a IMPERARE para la reforma de nuestra casa familiar y el resultado superó todas las expectativas. Profesionalismo, puntualidad y un diseño impecable. Recomendamos sin reservas.',
+                    'depoimentos.author2': '— A. Rossato',
+                    'depoimentos.role2': 'CEO Deloitte Portugal',
+                    'depoimentos.quote3': 'Un equipo que entiende el alma de una casa. IMPERARE no solo construyó una residencia, creó un refugio que nos acoge e inspira cada día. Gratitud eterna.',
+                    'depoimentos.author3': '— L. Rodrigues',
+                    'depoimentos.role3': 'Cliente particular',
+                    'depoimentos.quote4': 'Desde el primer boceto hasta la entrega de llaves, IMPERARE demostró una atención al detalle que raramente se ve. Un socio de confianza para proyectos de alto estándar.',
+                    'depoimentos.author4': '— F. Mendes',
+                    'depoimentos.role4': 'Arquitecto socio',
+                    'newsletter.title': 'Reciba <span>novedades</span> de IMPERARE',
+                    'newsletter.desc': 'Arquitectura, lanzamientos y tendencias de lujo directamente en su correo.',
+                    'newsletter.placeholder': 'Su mejor correo',
+                    'newsletter.btn': 'Suscribirse',
+                    'footer.brand.desc': 'Construcción e incorporación de alto estándar en Portugal. Transformamos espacios en experiencias de lujo y funcionalidad.',
+                    'footer.contacts.title': 'Contactos',
+                    'footer.contacts.instagram': '@imperareconstrutora',
+                    'footer.contacts.email': 'imperareconstrutora@gmail.com',
+                    'footer.contacts.address': 'São Domingos de Rana, Lisboa',
+                    'footer.contacts.phone': '+351 927 663 721',
+                    'footer.contacts.whatsapp': 'WhatsApp',
+                    'footer.copy': '© 2026 IMPERARE · Construcción e Incorporación, Lda. Todos los derechos reservados.',
+                    'quotation.workType': 'Tipo de Obra',
+                    'quotation.select': 'Seleccione...',
+                    'quotation.construcao': 'Construcción Nueva',
+                    'quotation.reforma': 'Reforma',
+                    'quotation.ampliacao': 'Ampliación',
+                    'quotation.interiores': 'Diseño de Interiores',
+                    'quotation.area': 'Área (m²)',
+                    'quotation.finish': 'Acabado',
+                    'quotation.basico': 'Básico',
+                    'quotation.medio': 'Medio',
+                    'quotation.luxo': 'Lujo',
+                    'quotation.premium': 'Premium',
+                    'quotation.btn': 'Calcular Presupuesto'
+                },
+                en: {
+                    'nav.home': 'Home',
+                    'nav.servicos': 'Services',
+                    'nav.sobre': 'About',
+                    'nav.equipa': 'Team',
+                    'nav.process': 'Process',
+                    'nav.investment': 'Investment',
+                    'nav.depoimentos': 'Testimonials',
+                    'nav.blog': 'Blog',
+                    'nav.contacto': 'Contact',
+                    'hero.badge': 'Excellence in construction',
+                    'hero.title1': 'Building is',
+                    'hero.title2': 'to reign',
+                    'hero.title3': 'with excellence.',
+                    'hero.desc': 'For over 20 years creating high-end residences in Portugal. Each project is a signature of luxury, minimalism, and functionality.',
+                    'hero.btn': 'View projects',
+                    'hero.scroll': 'Scroll',
+                    'hero.badge2': 'Author architecture',
+                    'hero.title4': 'Timeless',
+                    'hero.title5': 'design',
+                    'hero.title6': 'for modern living.',
+                    'hero.desc2': 'Spaces that combine aesthetics, functionality and innovation. Projects signed by renowned architects.',
+                    'hero.badge3': 'Luxury and sophistication',
+                    'hero.title7': 'Where',
+                    'hero.title8': 'luxury',
+                    'hero.title9': 'meets nature.',
+                    'hero.desc3': 'Exclusive retreats that harmonize architecture and landscape. Unique experiences in Portugal.',
+                    'stats.years': '20+',
+                    'stats.projects': '80+',
+                    'stats.satisfaction': '98%',
+                    'servicos.title': 'Excellence in <span>every detail</span>',
+                    'servicos.subtitle': 'Integrated solutions that turn dreams into reality, with the quality and sophistication that IMPERARE offers.',
+                    'servicos.item1.title': 'Construction & Development',
+                    'servicos.item1.desc': 'From conception to delivery, we manage all phases with premium materials and cutting-edge technology. We deliver projects that are references in Lisbon and the Algarve.',
+                    'servicos.item2.title': 'Executive Consulting',
+                    'servicos.item2.desc': 'Personalized strategic guidance: land selection, feasibility, design, and execution. Secure decisions for superior results.',
+                    'servicos.item3.title': 'Architecture & Interiors',
+                    'servicos.item3.desc': 'Spaces that combine timeless aesthetics and functionality. In partnership with renowned architects, we create environments that tell stories and inspire.',
+                    'sobre.title': 'More than building: <span>creating trends</span> in high-end.',
+                    'sobre.p1': 'With over 20 years of experience in the high-end market, IMPERARE specializes in creating timeless constructions, combining author architecture, noble materials, and custom solutions. Each project is carefully planned to provide well-being, functionality, and comfort, with a design that harmonizes aesthetics and precision.',
+                    'sobre.p2': 'Our commitment to excellence is reflected in a unique process: more than developments, IMPERARE transforms dreams into exceptional and personalized experiences.',
+                    'counters.label1': 'Years of career',
+                    'counters.label2': 'Projects completed',
+                    'counters.label3': '% Satisfaction',
+                    'depoimentos.title': 'What <span>our clients</span> say',
+                    'depoimentos.quote1': 'IMPERARE transformed our dream into a house that breathes light and sophistication. Every detail was thought through with rare sensitivity. The process was as fluid as the final result.',
+                    'depoimentos.author1': '— M. Loureiro',
+                    'depoimentos.role1': 'CFO Atlântico Group',
+                    'depoimentos.quote2': 'We hired IMPERARE to renovate our family home and the results exceeded all expectations. Professionalism, punctuality, and impeccable design. Highly recommended.',
+                    'depoimentos.author2': '— A. Rossato',
+                    'depoimentos.role2': 'CEO Deloitte Portugal',
+                    'depoimentos.quote3': 'A team that understands the soul of a home. IMPERARE didn\'t just build a residence; they created a refuge that welcomes and inspires us every day. Eternal gratitude.',
+                    'depoimentos.author3': '— L. Rodrigues',
+                    'depoimentos.role3': 'Private client',
+                    'depoimentos.quote4': 'From the first sketch to the key handover, IMPERARE showed an attention to detail that is rarely seen. A trusted partner for high-end projects.',
+                    'depoimentos.author4': '— F. Mendes',
+                    'depoimentos.role4': 'Partner architect',
+                    'newsletter.title': 'Receive <span>news</span> from IMPERARE',
+                    'newsletter.desc': 'Architecture, launches, and luxury trends straight to your inbox.',
+                    'newsletter.placeholder': 'Your best email',
+                    'newsletter.btn': 'Subscribe',
+                    'footer.brand.desc': 'High-end construction and development in Portugal. Transforming spaces into luxury and functional experiences.',
+                    'footer.contacts.title': 'Contacts',
+                    'footer.contacts.instagram': '@imperareconstrutora',
+                    'footer.contacts.email': 'imperareconstrutora@gmail.com',
+                    'footer.contacts.address': 'São Domingos de Rana, Lisbon',
+                    'footer.contacts.phone': '+351 927 663 721',
+                    'footer.contacts.whatsapp': 'WhatsApp',
+                    'footer.copy': '© 2026 IMPERARE · Construction & Development, Lda. All rights reserved.',
+                    'quotation.workType': 'Type of Work',
+                    'quotation.select': 'Select...',
+                    'quotation.construcao': 'New Construction',
+                    'quotation.reforma': 'Renovation',
+                    'quotation.ampliacao': 'Expansion',
+                    'quotation.interiores': 'Interior Design',
+                    'quotation.area': 'Area (m²)',
+                    'quotation.finish': 'Finish',
+                    'quotation.basico': 'Basic',
+                    'quotation.medio': 'Medium',
+                    'quotation.luxo': 'Luxury',
+                    'quotation.premium': 'Premium',
+                    'quotation.btn': 'Calculate Budget'
+                },
+                fr: {
+                    'nav.home': 'Accueil',
+                    'nav.servicos': 'Services',
+                    'nav.sobre': 'À propos',
+                    'nav.equipa': 'Équipe',
+                    'nav.process': 'Processus',
+                    'nav.investment': 'Investissement',
+                    'nav.depoimentos': 'Témoignages',
+                    'nav.blog': 'Blog',
+                    'nav.contacto': 'Contact',
+                    'hero.badge': 'Excellence en construction',
+                    'hero.title1': 'Construire, c\'est',
+                    'hero.title2': 'régner',
+                    'hero.title3': 'avec excellence.',
+                    'hero.desc': 'Depuis plus de 20 ans, nous créons des résidences haut de gamme au Portugal. Chaque projet est une signature de luxe, de minimalisme et de fonctionnalité.',
+                    'hero.btn': 'Voir les projets',
+                    'hero.scroll': 'Défiler',
+                    'hero.badge2': 'Architecture d\'auteur',
+                    'hero.title4': 'Design',
+                    'hero.title5': 'intemporel',
+                    'hero.title6': 'pour la vie moderne.',
+                    'hero.desc2': 'Des espaces qui allient esthétique, fonctionnalité et innovation. Des projets signés par des architectes renommés.',
+                    'hero.badge3': 'Luxe et sophistication',
+                    'hero.title7': 'Où le',
+                    'hero.title8': 'luxe',
+                    'hero.title9': 'rencontre la nature.',
+                    'hero.desc3': 'Des refuges exclusifs qui harmonisent architecture et paysage. Des expériences uniques au Portugal.',
+                    'stats.years': '20+',
+                    'stats.projects': '80+',
+                    'stats.satisfaction': '98%',
+                    'servicos.title': 'Excellence dans <span>chaque détail</span>',
+                    'servicos.subtitle': 'Des solutions intégrées qui transforment les rêves en réalité, avec la qualité et la sophistication qu\'IMPERARE offre.',
+                    'servicos.item1.title': 'Construction & Promotion',
+                    'servicos.item1.desc': 'De la conception à la livraison, nous gérons toutes les phases avec des matériaux nobles et une technologie de pointe. Nous livrons des projets qui font référence à Lisbonne et en Algarve.',
+                    'servicos.item2.title': 'Consulting Exécutif',
+                    'servicos.item2.desc': 'Accompagnement stratégique personnalisé : choix du terrain, faisabilité, projet et exécution. Des décisions sûres pour des résultats supérieurs.',
+                    'servicos.item3.title': 'Architecture & Intérieurs',
+                    'servicos.item3.desc': 'Des espaces qui allient esthétique intemporelle et fonctionnalité. En partenariat avec des architectes de renom, nous créons des ambiances qui racontent des histoires et inspirent.',
+                    'sobre.title': 'Plus que construire : <span>nous créons des tendances</span> haut de gamme.',
+                    'sobre.p1': 'Avec plus de 20 ans d\'expérience sur le marché haut de gamme, IMPERARE se spécialise dans la création de constructions intemporelles, alliant architecture d\'auteur, matériaux nobles et solutions sur mesure. Chaque projet est soigneusement planifié pour offrir bien-être, fonctionnalité et confort, avec un design qui harmonise esthétique et précision.',
+                    'sobre.p2': 'Notre engagement envers l\'excellence se reflète dans un processus unique : plus que des projets, IMPERARE transforme les rêves en expériences exceptionnelles et personnalisées.',
+                    'counters.label1': 'Années de carrière',
+                    'counters.label2': 'Projets réalisés',
+                    'counters.label3': '% Satisfaction',
+                    'depoimentos.title': 'Ce que <span>nos clients</span> disent',
+                    'depoimentos.quote1': 'IMPERARE a transformé notre rêve en une maison qui respire la lumière et la sophistication. Chaque détail a été pensé avec une sensibilité rare. Le processus a été aussi fluide que le résultat final.',
+                    'depoimentos.author1': '— M. Loureiro',
+                    'depoimentos.role1': 'CFO Groupe Atlântico',
+                    'depoimentos.quote2': 'Nous avons fait appel à IMPERARE pour rénover notre maison de famille et le résultat a dépassé toutes nos attentes. Professionnalisme, ponctualité et un design irréprochable. Nous recommandons sans réserve.',
+                    'depoimentos.author2': '— A. Rossato',
+                    'depoimentos.role2': 'CEO Deloitte Portugal',
+                    'depoimentos.quote3': 'Une équipe qui comprend l\'âme d\'une maison. IMPERARE n\'a pas seulement construit une résidence, elle a créé un refuge qui nous accueille et nous inspire chaque jour. Gratitude éternelle.',
+                    'depoimentos.author3': '— L. Rodrigues',
+                    'depoimentos.role3': 'Client particulier',
+                    'depoimentos.quote4': 'Du premier croquis à la remise des clés, IMPERARE a démontré une attention aux détails que l\'on voit rarement. Un partenaire de confiance pour des projets haut de gamme.',
+                    'depoimentos.author4': '— F. Mendes',
+                    'depoimentos.role4': 'Architecte partenaire',
+                    'newsletter.title': 'Recevez les <span>actualités</span> d\'IMPERARE',
+                    'newsletter.desc': 'Architecture, lancements et tendances du luxe directement dans votre boîte mail.',
+                    'newsletter.placeholder': 'Votre meilleur e-mail',
+                    'newsletter.btn': 'S\'abonner',
+                    'footer.brand.desc': 'Construction et promotion haut de gamme au Portugal. Nous transformons les espaces en expériences de luxe et de fonctionnalité.',
+                    'footer.contacts.title': 'Contacts',
+                    'footer.contacts.instagram': '@imperareconstrutora',
+                    'footer.contacts.email': 'imperareconstrutora@gmail.com',
+                    'footer.contacts.address': 'São Domingos de Rana, Lisbonne',
+                    'footer.contacts.phone': '+351 927 663 721',
+                    'footer.contacts.whatsapp': 'WhatsApp',
+                    'footer.copy': '© 2026 IMPERARE · Construction & Promotion, Lda. Tous droits réservés.',
+                    'quotation.workType': 'Type de Travaux',
+                    'quotation.select': 'Sélectionnez...',
+                    'quotation.construcao': 'Construction Neuve',
+                    'quotation.reforma': 'Rénovation',
+                    'quotation.ampliacao': 'Extension',
+                    'quotation.interiores': 'Design d\'Intérieur',
+                    'quotation.area': 'Surface (m²)',
+                    'quotation.finish': 'Finition',
+                    'quotation.basico': 'Basique',
+                    'quotation.medio': 'Moyen',
+                    'quotation.luxo': 'Luxe',
+                    'quotation.premium': 'Premium',
+                    'quotation.btn': 'Calculer le Budget'
+                }
+            };
+
+            var currentLang = 'pt';
+            var langLinks = document.querySelectorAll('#langSwitch .lang-link');
+            var translatableElements = document.querySelectorAll('[data-i18n]');
+            var placeholderElements = document.querySelectorAll('[data-i18n-placeholder]');
+
+            if (!langLinks.length) return;
+
+            function translatePage(lang) {
+                var dict = translations[lang];
+                if (!dict) return;
+
+                translatableElements.forEach(function(el) {
+                    var key = el.getAttribute('data-i18n');
+                    if (dict[key] !== undefined) {
+                        if (dict[key].includes('<span>') || dict[key].includes('<strong>') || dict[key].includes('<em>')) {
+                            el.innerHTML = dict[key];
+                        } else {
+                            el.textContent = dict[key];
+                        }
+                    }
+                });
+
+                placeholderElements.forEach(function(el) {
+                    var key = el.getAttribute('data-i18n-placeholder');
+                    if (dict[key] !== undefined) {
+                        el.placeholder = dict[key];
+                    }
+                });
+
+                langLinks.forEach(function(link) {
+                    link.classList.toggle('active', link.getAttribute('data-lang') === lang);
+                });
+
+                var langMap = {
+                    'pt': 'pt-PT',
+                    'es': 'es-ES',
+                    'en': 'en-GB',
+                    'fr': 'fr-FR'
+                };
+                document.documentElement.lang = langMap[lang] || 'pt-PT';
+
+                currentLang = lang;
+                console.log('🌐 Idioma alterado para: ' + lang);
+            }
+
+            langLinks.forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var lang = this.getAttribute('data-lang');
+                    if (lang && lang !== currentLang) {
+                        translatePage(lang);
+                    }
+                });
+            });
+
+            translatePage('pt');
+            console.log('🌐 Sistema de traduções inicializado!');
+        })();
+
+        // ============================================================
+        // PRELOADER FALBACK
+        // ============================================================
+        (function() {
+            'use strict';
+
+            function removePreloader() {
+                var preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.classList.add('hidden');
+                    setTimeout(function() {
+                        if (!preloader.classList.contains('hidden')) {
+                            preloader.style.opacity = '0';
+                            preloader.style.visibility = 'hidden';
+                            preloader.style.pointerEvents = 'none';
+                        }
+                    }, 3000);
+                }
+            }
+
+            if (document.readyState === 'complete') {
+                removePreloader();
+            } else {
+                window.addEventListener('load', function() {
+                    setTimeout(removePreloader, 800);
+                });
+            }
+
+            var attempts = 0;
+            var fallbackInterval = setInterval(function() {
+                attempts++;
+                var preloader = document.getElementById('preloader');
+                if (preloader && preloader.classList.contains('hidden')) {
+                    clearInterval(fallbackInterval);
+                    return;
+                }
+                if (attempts >= 5) {
+                    clearInterval(fallbackInterval);
+                    if (preloader) {
+                        preloader.style.opacity = '0';
+                        preloader.style.visibility = 'hidden';
+                        preloader.style.pointerEvents = 'none';
+                        preloader.classList.add('hidden');
+                    }
+                }
+            }, 1000);
+        })();
+
+        // ============================================================
+        // CARREGAR IMÓVEIS DO BACKEND
+        // ============================================================
+        (function() {
+            'use strict';
+
+            var API_URL = 'http://localhost:3000/api/properties';
+            var investGrid = document.getElementById('investGrid');
+
+            if (!investGrid) return;
+
+            function createPropertyCard(property) {
+                var card = document.createElement('div');
+                card.className = 'invest-card-new';
+
+                var iconsMap = { 'Lisboa': 'fa-city', 'Algarve': 'fa-umbrella-beach', 'Porto': 'fa-landmark' };
+                var icon = iconsMap[property.location] || 'fa-building';
+
+                var statusBadgeMap = {
+                    'disponivel': 'Projetos disponíveis',
+                    'em_lancamento': 'Em lançamento',
+                    'reservado': 'Reservado',
+                    'vendido': 'Vendido'
+                };
+                var statusLabel = statusBadgeMap[property.status] || property.status;
+
+                var finishMap = { 'basico': 'Básico', 'medio': 'Médio', 'luxo': 'Luxo', 'premium': 'Premium' };
+                var finishLabel = finishMap[property.finish] || property.finish;
+
+                var regionMap = { 'Lisboa': 'Capital', 'Algarve': 'Costa Sul', 'Porto': 'Norte' };
+                var region = regionMap[property.location] || property.location;
+
+                var statsHtml = '';
+                if (property.appreciation && property.appreciation !== 'N/A') {
+                    statsHtml += '<div class="i-stat"><strong>' + property.appreciation + '</strong><span>Val. anual</span></div>';
+                }
+                if (property.pricePerSqm && property.pricePerSqm !== 'N/A') {
+                    statsHtml += '<div class="i-stat"><strong>' + property.pricePerSqm + '</strong><span>Preço/m²</span></div>';
+                }
+                if (property.bedrooms) {
+                    statsHtml += '<div class="i-stat"><strong>T' + property.bedrooms + '–T' + (property.bedrooms + 1) + '</strong><span>Tipologias</span></div>';
+                } else {
+                    statsHtml += '<div class="i-stat"><strong>' + property.type + '</strong><span>Tipologia</span></div>';
+                }
+
+                var firstPhoto = property.photos && property.photos.length > 0 ? property.photos[0] : null;
+                var photoHtml = firstPhoto ? 
+                    '<div style="width:100%;height:140px;border-radius:8px;overflow:hidden;margin-bottom:0.5rem;background:#0d0d0d;border:1px solid rgba(201,169,110,0.1);">' +
+                    '<img src="' + firstPhoto + '" alt="' + property.title + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">' +
+                    '</div>' : '';
+
+                card.innerHTML = `
+                    ${photoHtml}
+                    <div class="invest-card-icon-w"><i class="fas ${icon}"></i></div>
+                    <p class="invest-region-tag">${region}</p>
+                    <h3>${property.location}</h3>
+                    <p class="invest-card-desc">${property.description ? property.description.substring(0, 100) + (property.description.length > 100 ? '...' : '') : 'Empreendimento exclusivo com acabamentos de excelência.'}</p>
+                    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin:0.2rem 0 0.4rem;">
+                        <span style="font-size:0.7rem;background:rgba(201,169,110,0.08);color:#c9a96e;padding:0.1rem 0.5rem;border-radius:12px;border:1px solid rgba(201,169,110,0.1);">${finishLabel}</span>
+                        <span style="font-size:0.7rem;background:rgba(201,169,110,0.08);color:#c9a96e;padding:0.1rem 0.5rem;border-radius:12px;border:1px solid rgba(201,169,110,0.1);">${property.area}m²</span>
+                    </div>
+                    <div style="font-size:1.3rem;font-weight:600;color:#c9a96e;margin-bottom:0.3rem;">${property.priceFormatted || '€' + Number(property.price).toLocaleString('pt-PT')}</div>
+                    <div class="invest-stats-row">${statsHtml}</div>
+                    <span class="invest-badge"><span class="invest-badge-dot"></span>${statusLabel}</span>
+                `;
+                return card;
+            }
+
+            function loadProperties() {
+                investGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#7a756e;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;display:block;margin-bottom:0.5rem;"></i>A carregar imóveis...</div>';
+
+                fetch(API_URL)
+                    .then(function(response) {
+                        if (!response.ok) throw new Error('Erro HTTP: ' + response.status);
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        var properties = data.data || data;
+                        var available = properties.filter(function(p) {
+                            return p.status === 'disponivel' || p.status === 'em_lancamento';
+                        });
+
+                        if (available.length === 0) {
+                            investGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#7a756e;"><i class="fas fa-building" style="font-size:2rem;display:block;margin-bottom:0.5rem;opacity:0.3;"></i>Nenhum imóvel disponível no momento.</div>';
+                            return;
+                        }
+
+                        investGrid.innerHTML = '';
+                        available.slice(0, 3).forEach(function(property) {
+                            var card = createPropertyCard(property);
+                            investGrid.appendChild(card);
+                        });
+
+                        console.log('🏠 Imóveis carregados do backend!');
+                    })
+                    .catch(function(error) {
+                        console.error('❌ Erro ao carregar imóveis:', error);
+                        investGrid.innerHTML = `
+                            <div style="grid-column:1/-1;text-align:center;padding:2rem;color:#e74c3c;border:1px solid rgba(231,76,60,0.2);border-radius:8px;background:rgba(231,76,60,0.05);">
+                                <i class="fas fa-exclamation-triangle" style="font-size:2rem;display:block;margin-bottom:0.5rem;"></i>
+                                <p style="font-weight:500;">Não foi possível carregar os imóveis do servidor.</p>
+                                <p style="font-size:0.85rem;color:#7a756e;margin-top:0.3rem;">Certifique-se que o servidor está a correr: <code style="background:#1a1816;padding:0.2rem 0.6rem;border-radius:4px;color:#c9a96e;">node server.js</code></p>
+                            </div>
+                        `;
+                    });
+            }
+
+            loadProperties();
+            setInterval(loadProperties, 30000);
+
+            console.log('🏠 Sistema de imóveis inicializado!');
+        })();
+
+        // ============================================================
+        // CARREGAR EQUIPA DO BACKEND
+        // ============================================================
+        (function() {
+            'use strict';
+
+            var teamGrid = document.getElementById('teamGrid');
+
+            if (!teamGrid) return;
+
+            var API_URL = 'http://localhost:3000/api/team';
+
+            function renderTeam(members) {
+                if (!members || members.length === 0) return;
+
+                teamGrid.innerHTML = '';
+                members.slice(0, 3).forEach(function(member) {
+                    var card = document.createElement('article');
+                    card.className = 'team-member-card';
+                    card.innerHTML = `
+                        <div class="team-member-photo">
+                            <img src="${member.photo || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(member.name) + '&background=c9a96e&color=fff&size=128'}" alt="${member.name}" loading="lazy">
+                        </div>
+                        <h3>${member.name}</h3>
+                        <p>${member.role}</p>
+                        ${member.bio ? '<small style="color:#7a756e;display:block;margin-top:0.5rem;font-size:0.8rem;">' + member.bio + '</small>' : ''}
+                    `;
+                    teamGrid.appendChild(card);
+                });
+                console.log('👥 Equipa carregada do backend!');
+            }
+
+            function loadTeam() {
+                fetch(API_URL)
+                    .then(function(response) {
+                        if (!response.ok) throw new Error('Erro ao carregar equipa');
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        renderTeam(data);
+                    })
+                    .catch(function(error) {
+                        console.log('ℹ️ Backend offline - usando cards estáticos');
+                    });
+            }
+
+            loadTeam();
+            setInterval(loadTeam, 30000);
+
+            console.log('👥 Sistema de equipa inicializado!');
+        })();
+
+        // ============================================================
+        // NEWSLETTER
+        // ============================================================
+        (function() {
+            var form = document.querySelector('.news-form');
+            if (!form) return;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var input = this.querySelector('input[type="email"]');
+                if (input && input.value.trim()) {
+                    alert('Obrigado pela sua subscrição!');
+                    input.value = '';
+                } else {
+                    alert('Por favor, insira um e-mail válido.');
+                }
+            });
+        })();
+
+        // ============================================================
+        // CONTACTO FORM
+        // ============================================================
+        (function() {
+            var form = document.getElementById('contactForm');
+            if (!form) return;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var inputs = form.querySelectorAll('input, textarea');
+                var allFilled = true;
+                inputs.forEach(function(input) {
+                    if (input.hasAttribute('required') && !input.value.trim()) {
+                        allFilled = false;
+                        input.style.borderColor = '#e74c3c';
+                    } else {
+                        input.style.borderColor = '';
+                    }
+                });
+                if (!allFilled) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+                alert('Mensagem enviada com sucesso! Entraremos em contacto brevemente.');
+                form.reset();
+            });
+        })();
+
+        // ============================================================
+        // BACK TO TOP
+        // ============================================================
+        (function() {
+            var button = document.getElementById('back-to-top-button');
+            if (!button) return;
+
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 400) {
+                    button.classList.add('visible');
+                } else {
+                    button.classList.remove('visible');
+                }
+            }, { passive: true });
+
+            button.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        })();
+
+        // ============================================================
+        // QUOTATION FORM
+        // ============================================================
+        (function() {
+            var form = document.getElementById('quotation-form');
+            var resultDiv = document.getElementById('quotation-result');
+            if (!form || !resultDiv) return;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                var workType = document.getElementById('workType');
+                var area = document.getElementById('area');
+                var finish = document.getElementById('finish');
+
+                if (!workType || !area || !finish) return;
+
+                var workTypeValue = workType.value;
+                var areaValue = parseFloat(area.value);
+                var finishValue = finish.value;
+
+                if (!workTypeValue || !areaValue || !finishValue) {
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = '<p style="color:#e74c3c;">Por favor, preencha todos os campos corretamente.</p>';
+                    return;
+                }
+
+                var basePrices = { 'construcao': 1800, 'reforma': 1200, 'ampliacao': 1400, 'interiores': 800 };
+                var finishMultipliers = { 'basico': 1.0, 'medio': 1.3, 'luxo': 1.8, 'premium': 2.5 };
+
+                var basePrice = basePrices[workTypeValue] || 1500;
+                var multiplier = finishMultipliers[finishValue] || 1.0;
+                var estimatedCost = basePrice * areaValue * multiplier;
+                var formattedCost = estimatedCost.toLocaleString('pt-PT', {
+                    style: 'currency',
+                    currency: 'EUR',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                });
+
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <div style="background:var(--bg-card,#1a1816);padding:2rem;border-radius:8px;border:1px solid var(--border-color,#2a2825);text-align:center;">
+                        <h3 style="color:var(--gold,#c9a96e);margin-bottom:0.5rem;">Orçamento Estimado</h3>
+                        <p style="font-size:2.5rem;font-weight:600;color:var(--text-primary,#f2efe9);">${formattedCost}</p>
+                        <p style="color:var(--text-secondary,#b4aea4);margin-top:0.5rem;">Baseado em ${areaValue}m² · ${finish.options[finish.selectedIndex].text} · ${workType.options[workType.selectedIndex].text}</p>
+                        <p style="color:var(--text-dim,#7a756e);font-size:0.8rem;margin-top:1rem;">Este é um valor estimado. Entre em contacto para um orçamento detalhado.</p>
+                        <a href="#contacto" class="btn btn-gold" style="margin-top:1rem;">Solicitar Orçamento Detalhado</a>
+                    </div>
+                `;
+
+                resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        })();
+
+        // ============================================================
+        // HEADER SCROLL EFFECT
+        // ============================================================
+        (function() {
+            var header = document.getElementById('mainHeader');
+            if (!header) return;
+
+            window.addEventListener('scroll', function() {
+                var currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                if (currentScroll > 80) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            }, { passive: true });
+        })();
+
+        // ============================================================
+        // SCROLL REVEAL
+        // ============================================================
+        (function() {
+            var revealElements = document.querySelectorAll('.pillar-item, .testimonial-card, .counter-item, .process-item');
+
+            if (!revealElements.length) return;
+
+            var revealObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.15,
+                rootMargin: '0px 0px -30px 0px'
+            });
+
+            revealElements.forEach(function(el) {
+                revealObserver.observe(el);
+            });
+        })();
+
+        // ============================================================
+        // CONTADORES ANIMADOS
+        // ============================================================
+        (function() {
+            var counters = document.querySelectorAll('.counter-item .number');
+            var countersAnimated = false;
+
+            if (!counters.length) return;
+
+            var counterObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting && !countersAnimated) {
+                        countersAnimated = true;
+                        counters.forEach(function(counter) {
+                            var target = parseInt(counter.getAttribute('data-target'), 10);
+                            if (isNaN(target)) return;
+                            var current = 0;
+                            var increment = Math.ceil(target / 60);
+                            var timer = setInterval(function() {
+                                current += increment;
+                                if (current >= target) {
+                                    counter.textContent = target + (target === 98 ? '%' : '+');
+                                    clearInterval(timer);
+                                } else {
+                                    counter.textContent = current + (target === 98 ? '%' : '+');
+                                }
+                            }, 25);
+                        });
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            document.querySelectorAll('.counters').forEach(function(el) {
+                counterObserver.observe(el);
+            });
+        })();
+
+        // ============================================================
+        // HERO CARROSSEL
+        // ============================================================
+        (function() {
+            var slides = document.querySelectorAll('.hero-slide');
+            var controls = document.querySelectorAll('.hero-control-btn');
+            var currentSlide = 0;
+            var slideInterval;
+            var intervalTime = 6000;
+
+            if (!slides.length) return;
+
+            function goToSlide(index) {
+                slides.forEach(function(slide, i) {
+                    slide.classList.toggle('active', i === index);
+                });
+                controls.forEach(function(btn, i) {
+                    btn.classList.toggle('active', i === index);
+                    btn.setAttribute('aria-selected', i === index ? 'true' : 'false');
+                });
+                currentSlide = index;
+            }
+
+            function nextSlide() {
+                var next = (currentSlide + 1) % slides.length;
+                goToSlide(next);
+            }
+
+            function resetInterval() {
+                clearInterval(slideInterval);
+                slideInterval = setInterval(nextSlide, intervalTime);
+            }
+
+            controls.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var index = parseInt(this.getAttribute('data-slide'), 10);
+                    if (!isNaN(index) && index !== currentSlide) {
+                        goToSlide(index);
+                        resetInterval();
+                    }
+                });
+            });
+
+            goToSlide(0);
+            slideInterval = setInterval(nextSlide, intervalTime);
+        })();
+
+        console.log('🚀 IMPERARE - Site carregado com sucesso!');
+        console.log('📋 Versão: 5.0 - Completa e Corrigida');
+        console.log('✅ WhatsApp - lado direito inferior');
+        console.log('✅ Back to Top - lado esquerdo inferior');
+        console.log('✅ Sistema de traduções funcionando 100%');
+        console.log('✅ Sincronização com o admin ativada');
+    </script>
+
+</body>
+</html>

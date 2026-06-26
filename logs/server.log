@@ -1,0 +1,187 @@
+💾 Backup criado: backup_2026-06-26T15-31-43-401Z.json
+2026-06-26T15:31:52.943Z | [b253a5e626878376] GET /api/health | 200 | 15ms | 234B | ::1
+2026-06-26T15:31:52.953Z | [f53c55055887b70a] GET /api/team | 200 | 5ms | 1299B | ::1
+2026-06-26T15:31:52.956Z | [13c13f2986b872b6] GET /api/stats | 200 | 7ms | 191B | ::1
+2026-06-26T15:31:52.959Z | [95029bb218755a01] GET /api/properties | 200 | 9ms | 2454B | ::1
+2026-06-26T15:31:55.245Z | [d1b44cac7662b6e8] GET /api/properties | 304 | 2ms | 0B | ::1
+2026-06-26T15:32:23.242Z | [885c9bac5f687488] GET /api/health | 200 | 5ms | 234B | ::1
+2026-06-26T15:32:43.518Z | [408a19c737a6442e] GET /api/logs?limit=100 | 404 | 3ms | 32B | ::1
+2026-06-26T15:32:52.922Z | [e8705bbc78ed6aa0] GET /api/health | 200 | 5ms | 234B | ::1
+2026-06-26T15:33:22.927Z | [4553d3c50ed6c180] GET /api/health | 200 | 2ms | 235B | ::1
+2026-06-26T15:33:35.839Z | [121d306463520ef8] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T15:33:53.251Z | [5723d5c0a8f5aa2b] GET /api/health | 200 | 5ms | 236B | ::1
+2026-06-26T15:34:23.247Z | [ad97a5c21e6f5fbc] GET /api/health | 200 | 5ms | 236B | ::1
+2026-06-26T15:34:53.261Z | [aa2ffa4a03e6412b] GET /api/health | 200 | 11ms | 236B | ::1
+2026-06-26T15:35:23.250Z | [ed6aa868f03dba2f] GET /api/health | 200 | 2ms | 236B | ::1
+2026-06-26T15:36:21.240Z | [d8edfdd9d81f7030] GET /api/health | 200 | 2ms | 235B | ::1
+2026-06-26T15:37:21.257Z | [4cf47fd8720ada54] GET /api/health | 200 | 9ms | 236B | ::1
+2026-06-26T15:38:21.247Z | [9139cd5d267c458b] GET /api/health | 200 | 5ms | 236B | ::1
+2026-06-26T15:39:21.244Z | [4b1e5af81478b336] GET /api/health | 200 | 5ms | 236B | ::1
+2026-06-26T15:40:21.256Z | [208cf08f3176f0ca] GET /api/health | 200 | 8ms | 236B | ::1
+2026-06-26T15:41:21.248Z | [285d5f63778b0947] GET /api/health | 200 | 5ms | 236B | ::1
+2026-06-26T15:42:21.244Z | [c2c3a1bf8b0bec10] GET /api/health | 200 | 4ms | 236B | ::1
+2026-06-26T15:43:11.746Z | [179768bd2cf95559] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T15:43:31.562Z | [36bc49aa888882cf] GET /api/properties | 304 | 2ms | 0B | ::1
+2026-06-26T15:43:56.948Z | [eccf400ae2a5057d] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T15:46:50.997Z | [abb7ddb254f4178f] GET /api/health | 200 | 3ms | 236B | ::1
+2026-06-26T15:46:51.000Z | [d9b289f0a3985ba9] GET /api/properties | 304 | 2ms | 0B | ::1
+2026-06-26T15:46:51.002Z | [72788d150d3adc24] GET /api/stats | 200 | 3ms | 191B | ::1
+2026-06-26T15:46:51.003Z | [b1703a2f30480a42] GET /api/team | 304 | 4ms | 0B | ::1
+2026-06-26T15:47:01.732Z | [e7490ca058038b12] GET /api/logs?limit=100 | 404 | 1ms | 32B | ::1
+2026-06-26T15:47:03.498Z | [444768df0c90565b] GET /api/logs?limit=100 | 404 | 1ms | 32B | ::1
+2026-06-26T15:47:11.106Z | [7e73dc20886f1732] GET /api/health | 200 | 8ms | 234B | ::1
+2026-06-26T15:47:12.483Z | [dd33fbc3d4939603] GET /api/health | 200 | 4ms | 234B | ::1
+💾 Backup criado: backup_2026-06-26T15-47-12-904Z.json
+2026-06-26T15:47:17.496Z | [3e96dc2e2c5c38ea] GET /api/logs?limit=100 | 404 | 3ms | 32B | ::1
+2026-06-26T15:47:19.652Z | [cb853e43e4372906] GET /api/properties | 304 | 5ms | 0B | ::1
+2026-06-26T15:47:21.242Z | [21b86cf67461c161] GET /api/health | 200 | 5ms | 235B | ::1
+💾 Backup criado: backup_2026-06-26T15-52-09-280Z.json
+2026-06-26T15:52:09.778Z | [88bb4163b6561b13] GET /api/properties | 304 | 6ms | 0B | ::1
+2026-06-26T15:54:07.265Z | [e483ac256551aafd] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T15:56:45.695Z | [f969c212bf1242f5] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T15:56:50.246Z | [bc9d0b7758cf008e] GET /api/properties | 304 | 1ms | 0B | ::1
+💾 Backup criado: backup_2026-06-26T16-01-44-476Z.json
+2026-06-26T16:01:57.555Z | [7c2b58fb88b663eb] GET /api/health | 200 | 9ms | 235B | ::1
+2026-06-26T16:01:57.560Z | [57b864f8803b83b4] GET /api/properties | 304 | 4ms | 0B | ::1
+2026-06-26T16:01:57.562Z | [8cd6aeb43b92da30] GET /api/stats | 200 | 5ms | 191B | ::1
+2026-06-26T16:01:57.564Z | [fa88261e5fd64415] GET /api/team | 304 | 7ms | 0B | ::1
+2026-06-26T16:01:59.841Z | [f4f2c2404565fc37] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T16:02:28.252Z | [5fbcd125cb39d4e2] GET /api/health | 200 | 6ms | 235B | ::1
+2026-06-26T16:02:58.257Z | [30ac5ea9174cce14] GET /api/health | 200 | 9ms | 235B | ::1
+2026-06-26T16:03:28.240Z | [dbd247c9854e8d98] GET /api/health | 200 | 2ms | 236B | ::1
+2026-06-26T16:03:33.047Z | [da09420391c4bfcc] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T16:03:58.248Z | [a7ac5d10f530db71] GET /api/health | 200 | 6ms | 236B | ::1
+2026-06-26T16:04:28.246Z | [62df892d67558361] GET /api/health | 200 | 6ms | 236B | ::1
+💾 Backup criado: backup_2026-06-26T16-05-20-897Z.json
+2026-06-26T16:05:21.220Z | [fa995d37fa174ff1] GET /api/properties | 304 | 6ms | 0B | ::1
+2026-06-26T16:05:38.250Z | [39d5b062814742f7] GET /api/health | 200 | 7ms | 235B | ::1
+2026-06-26T16:05:38.251Z | [5b5ac2e7ddee4933] GET /api/properties | 304 | 7ms | 0B | ::1
+2026-06-26T16:05:38.253Z | [13ccbb77364e749c] GET /api/stats | 200 | 8ms | 191B | ::1
+2026-06-26T16:05:38.255Z | [7422b508f7da7090] GET /api/team | 304 | 9ms | 0B | ::1
+2026-06-26T16:05:45.078Z | [e26ea683c8d325b2] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T16:06:09.254Z | [908a11ed63df6d0b] GET /api/health | 200 | 13ms | 235B | ::1
+2026-06-26T16:06:39.255Z | [605f12e8a1841725] GET /api/health | 200 | 5ms | 235B | ::1
+2026-06-26T16:07:09.250Z | [63be9c3f5769683b] GET /api/health | 200 | 8ms | 236B | ::1
+2026-06-26T16:07:39.257Z | [5be0efc7c7a6693a] GET /api/health | 200 | 8ms | 236B | ::1
+2026-06-26T16:08:09.244Z | [c994b92db5b6470e] GET /api/health | 200 | 6ms | 236B | ::1
+2026-06-26T16:08:39.241Z | [a160d02920a9869b] GET /api/health | 200 | 4ms | 236B | ::1
+2026-06-26T16:09:09.245Z | [568eb76bd5212c43] GET /api/health | 200 | 4ms | 236B | ::1
+2026-06-26T16:10:10.249Z | [49fdb9f8e046012a] GET /api/health | 200 | 5ms | 235B | ::1
+2026-06-26T16:11:11.248Z | [d18577e1582610da] GET /api/health | 200 | 11ms | 236B | ::1
+2026-06-26T16:12:12.248Z | [ad852accceed2cc2] GET /api/health | 200 | 4ms | 236B | ::1
+2026-06-26T16:13:13.258Z | [97f40ab1e95c8991] GET /api/health | 200 | 8ms | 236B | ::1
+2026-06-26T16:14:14.253Z | [4f3a3a0efff95c08] GET /api/health | 200 | 10ms | 236B | ::1
+2026-06-26T16:15:15.260Z | [8b10ba78f25f15da] GET /api/health | 200 | 9ms | 236B | ::1
+2026-06-26T16:16:23.439Z | [62230a24ffef0e17] GET /api/health | 200 | 6ms | 236B | ::1
+2026-06-26T16:17:17.244Z | [914b940e48859736] GET /api/health | 200 | 4ms | 236B | ::1
+2026-06-26T16:18:18.256Z | [01056dc7a6cf6b8c] GET /api/health | 200 | 6ms | 236B | ::1
+2026-06-26T16:19:19.255Z | [5352e7067e5c0dab] GET /api/health | 200 | 7ms | 236B | ::1
+2026-06-26T16:33:56.618Z | [ac0af9fedef52b72] GET /api/team | 304 | 8ms | 0B | ::1
+💾 Backup criado: backup_2026-06-26T16-33-57-096Z.json
+2026-06-26T16:33:57.613Z | [7b16b012f0f6c1f9] GET /api/properties | 304 | 2ms | 0B | ::1
+2026-06-26T16:34:30.578Z | [aab165c23133adae] GET /api/health | 200 | 10ms | 235B | ::1
+2026-06-26T16:34:30.580Z | [3273c674bdf6c55d] GET /api/stats | 200 | 11ms | 191B | ::1
+2026-06-26T16:34:30.581Z | [179a67c5412192d5] GET /api/team | 304 | 11ms | 0B | ::1
+2026-06-26T16:34:30.582Z | [43ac7ec245e69c23] GET /api/properties | 304 | 9ms | 0B | ::1
+2026-06-26T16:34:32.728Z | [b51a16f22510b5f5] GET /api/team | 304 | 1ms | 0B | ::1
+2026-06-26T16:34:33.736Z | [6da1119dd376b548] GET /api/properties | 304 | 2ms | 0B | ::1
+2026-06-26T16:34:42.024Z | [0ae6876594267794] GET /api/properties | 304 | 2ms | 0B | ::1
+2026-06-26T16:34:46.967Z | [390e9a6a73cc8f47] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T16:35:01.238Z | [df423b8c447151c2] GET /api/health | 200 | 3ms | 235B | ::1
+2026-06-26T16:35:22.131Z | [ec1814625eb29ffd] GET /api/team | 304 | 1ms | 0B | ::1
+2026-06-26T16:35:23.145Z | [189e22e4b8bd0d9e] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T16:35:31.248Z | [f23d81c18e573605] GET /api/health | 200 | 2ms | 235B | ::1
+2026-06-26T16:35:34.867Z | [69012798f9352de7] GET /api/team | 304 | 1ms | 0B | ::1
+2026-06-26T16:35:35.368Z | [7311b512a8ac5999] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T16:46:30.858Z | [f0d398d42cb35a46] GET /api/properties | 304 | 2ms | 0B | ::1
+2026-06-26T17:04:53.681Z | [ede4c41e6638aa09] GET /api/health | 200 | 11ms | 237B | ::1
+2026-06-26T17:04:53.682Z | [11c4ddfe493ea3f0] GET /api/team | 304 | 11ms | 0B | ::1
+2026-06-26T17:04:53.684Z | [300e4bf743df406f] GET /api/stats | 200 | 11ms | 191B | ::1
+2026-06-26T17:04:53.686Z | [2593d534839e7eb9] GET /api/properties | 304 | 11ms | 0B | ::1
+✏️ Membro atualizado: Thiago Silva
+2026-06-26T17:05:18.840Z | [939d6fcfaa702ac5] PUT /api/team/1 | 200 | 3ms | 439B | ::1
+2026-06-26T17:05:18.845Z | [c673c6546defe950] GET /api/team | 200 | 2ms | 1303B | ::1
+2026-06-26T17:05:18.852Z | [046cc29ee1374dab] GET /api/stats | 200 | 4ms | 191B | ::1
+2026-06-26T17:05:23.689Z | [bdbd41c8d3502b2a] GET /api/health | 200 | 6ms | 238B | ::1
+✏️ Membro atualizado: Diogo Costa
+2026-06-26T17:05:29.751Z | [3aa1f6d8ee81f2ab] PUT /api/team/2 | 200 | 3ms | 448B | ::1
+2026-06-26T17:05:29.756Z | [466d54ad37fc0216] GET /api/team | 200 | 1ms | 1310B | ::1
+2026-06-26T17:05:29.761Z | [63da71fb58a9e1ae] GET /api/stats | 200 | 1ms | 191B | ::1
+✏️ Membro atualizado: Thiago Silva
+2026-06-26T17:05:34.781Z | [e372c86d12f78539] PUT /api/team/1 | 200 | 3ms | 440B | ::1
+2026-06-26T17:05:34.795Z | [5677363d125c878d] GET /api/team | 200 | 2ms | 1311B | ::1
+2026-06-26T17:05:34.799Z | [637fc27e86b8fdd3] GET /api/stats | 200 | 1ms | 191B | ::1
+✏️ Membro atualizado: Diogo Costa
+2026-06-26T17:05:42.817Z | [c986740211062f7a] PUT /api/team/2 | 200 | 3ms | 452B | ::1
+2026-06-26T17:05:42.823Z | [9a0629079660cbe5] GET /api/team | 200 | 2ms | 1315B | ::1
+2026-06-26T17:05:42.828Z | [6c8a1aa4a46ffd16] GET /api/stats | 200 | 2ms | 191B | ::1
+2026-06-26T17:05:53.679Z | [891cb853b54001e3] GET /api/health | 200 | 6ms | 238B | ::1
+✏️ Membro atualizado: Greyci
+2026-06-26T17:06:09.655Z | [f05730557d98f377] PUT /api/team/3 | 200 | 6ms | 396B | ::1
+2026-06-26T17:06:09.660Z | [0742a8fe60d79857] GET /api/team | 200 | 3ms | 1292B | ::1
+2026-06-26T17:06:09.666Z | [c77f55b247ca728d] GET /api/stats | 200 | 2ms | 191B | ::1
+2026-06-26T17:06:24.247Z | [69867c8084996819] GET /api/health | 200 | 7ms | 237B | ::1
+2026-06-26T17:06:54.242Z | [9e392ed15f3e8a38] GET /api/health | 200 | 6ms | 238B | ::1
+2026-06-26T17:07:24.251Z | [a33250bc5b017328] GET /api/health | 200 | 7ms | 238B | ::1
+2026-06-26T17:07:54.250Z | [dea9ac089066a102] GET /api/health | 200 | 6ms | 238B | ::1
+2026-06-26T17:08:04.723Z | [95260c2e180f11e0] GET /api/health | 200 | 5ms | 238B | ::1
+2026-06-26T17:08:05.740Z | [5da5c79c10278bec] GET /api/health | 200 | 5ms | 238B | ::1
+2026-06-26T17:08:10.447Z | [c1a9686db269d6a5] GET /api/logs?limit=100 | 404 | 1ms | 32B | ::1
+2026-06-26T17:08:23.671Z | [257abc03b30c4622] GET /api/health | 200 | 6ms | 238B | ::1
+🗑️ Membro removido: Greyci
+2026-06-26T17:08:27.627Z | [1ebb29be79231386] DELETE /api/team/3 | 200 | 4ms | 447B | ::1
+2026-06-26T17:08:27.632Z | [b0c83ca113ec8226] GET /api/team | 200 | 2ms | 895B | ::1
+2026-06-26T17:08:27.638Z | [34640794883a1d2c] GET /api/stats | 200 | 2ms | 191B | ::1
+2026-06-26T17:27:08.306Z | [0e39d3eccf2984eb] GET /api/properties | 304 | 5ms | 0B | ::1
+2026-06-26T17:27:08.307Z | [14a9b16724688fd2] GET /api/team | 304 | 5ms | 0B | ::1
+2026-06-26T17:27:38.314Z | [164902bb5b3e0324] GET /api/properties | 304 | 2ms | 0B | ::1
+2026-06-26T17:27:38.315Z | [2ccd3f7c17220f97] GET /api/team | 304 | 2ms | 0B | ::1
+2026-06-26T17:28:08.302Z | [bde56f20e02308c1] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T17:28:08.303Z | [9d4e3f185019b92b] GET /api/team | 304 | 2ms | 0B | ::1
+2026-06-26T17:28:38.316Z | [93a99f20195b8f09] GET /api/properties | 304 | 2ms | 0B | ::1
+2026-06-26T17:28:38.317Z | [9c0181cae083a86a] GET /api/team | 304 | 2ms | 0B | ::1
+2026-06-26T17:29:08.303Z | [f8c09d43002bb99e] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T17:29:08.305Z | [d1010e24eaf4ee5b] GET /api/team | 304 | 2ms | 0B | ::1
+2026-06-26T17:29:15.289Z | [0b1300abb66c0784] GET /api/properties | 304 | 0ms | 0B | ::1
+2026-06-26T17:29:25.286Z | [0cd27a29de5e67cd] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T17:29:25.288Z | [b83a330fbf3c7f75] GET /api/team | 304 | 3ms | 0B | ::1
+2026-06-26T17:29:35.349Z | [fb6e752da20e4d14] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T17:30:00.960Z | [f105ea6ef34713af] GET /api/health | 200 | 3ms | 238B | ::1
+2026-06-26T17:30:00.965Z | [f17135bcd2ddde92] GET /api/stats | 200 | 4ms | 191B | ::1
+2026-06-26T17:30:00.966Z | [b304073d06f8411e] GET /api/team | 304 | 4ms | 0B | ::1
+2026-06-26T17:30:00.966Z | [013eb826a5fcf15a] GET /api/properties | 304 | 3ms | 0B | ::1
+2026-06-26T17:30:09.244Z | [45cd435e24d26777] GET /api/properties | 304 | 3ms | 0B | ::1
+2026-06-26T17:30:09.245Z | [5275b7db2aca7dad] GET /api/team | 304 | 3ms | 0B | ::1
+2026-06-26T17:30:30.976Z | [fa5291615869db70] GET /api/health | 200 | 7ms | 237B | ::1
+👤 Membro adicionado: Greyci Fontoura
+2026-06-26T17:30:35.332Z | [603971ab2dede075] POST /api/team | 201 | 3ms | 354B | ::1
+2026-06-26T17:30:35.346Z | [46eb6f970d9c204a] GET /api/team | 200 | 2ms | 1250B | ::1
+2026-06-26T17:30:35.352Z | [9c2c2fa4fc632250] GET /api/stats | 200 | 2ms | 191B | ::1
+2026-06-26T17:30:38.629Z | [9216634ee1596171] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T17:30:38.632Z | [a2d26f0fe0993749] GET /api/team | 304 | 0ms | 0B | ::1
+2026-06-26T17:30:41.004Z | [ede879991411bb56] GET /api/team | 304 | 1ms | 0B | ::1
+2026-06-26T17:30:41.005Z | [0c8d77fd67489653] GET /api/properties | 304 | 2ms | 0B | ::1
+2026-06-26T17:31:00.962Z | [d9c8303163f3cd8c] GET /api/health | 200 | 6ms | 238B | ::1
+✏️ Membro atualizado: Diogo Costa
+2026-06-26T17:31:01.656Z | [529bd5beef8cb846] PUT /api/team/2 | 200 | 4ms | 435B | ::1
+2026-06-26T17:31:01.661Z | [bd8ca35bc7f65862] GET /api/team | 200 | 2ms | 1233B | ::1
+2026-06-26T17:31:01.667Z | [c8701485ef0eb66c] GET /api/stats | 200 | 2ms | 191B | ::1
+✏️ Membro atualizado: Thiago Silva
+2026-06-26T17:31:10.747Z | [9f453fd3e3c79a58] PUT /api/team/1 | 200 | 7ms | 426B | ::1
+2026-06-26T17:31:10.753Z | [96602c0e6e6b6103] GET /api/team | 200 | 1ms | 1219B | ::1
+2026-06-26T17:31:10.758Z | [ab5616f65d3a5dcc] GET /api/stats | 200 | 2ms | 191B | ::1
+2026-06-26T17:31:11.237Z | [66e3464d2d5af27c] GET /api/team | 304 | 3ms | 0B | ::1
+2026-06-26T17:31:11.239Z | [1cbb1bda53162a43] GET /api/properties | 304 | 4ms | 0B | ::1
+2026-06-26T17:31:15.122Z | [33c47bdabc1880a1] GET /api/properties | 304 | 2ms | 0B | ::1
+2026-06-26T17:31:15.123Z | [b07576926365f655] GET /api/team | 304 | 2ms | 0B | ::1
+2026-06-26T17:31:30.952Z | [863e96431b2725f9] GET /api/health | 200 | 3ms | 238B | ::1
+✏️ Membro atualizado: Thiago Silva
+2026-06-26T17:31:31.781Z | [d2ea63ddedb87c69] PUT /api/team/1 | 200 | 3ms | 435B | ::1
+2026-06-26T17:31:31.790Z | [87f5a94fa3cd9351] GET /api/team | 200 | 2ms | 1228B | ::1
+2026-06-26T17:31:31.795Z | [5cc19bd78011a5af] GET /api/stats | 200 | 2ms | 191B | ::1
+✏️ Membro atualizado: Diogo Costa
+2026-06-26T17:31:38.443Z | [b11e487c570485dc] PUT /api/team/2 | 200 | 3ms | 426B | ::1
+2026-06-26T17:31:38.454Z | [2e46c2679a92b85f] GET /api/team | 200 | 2ms | 1219B | ::1
+2026-06-26T17:31:38.459Z | [483df88e7f911c08] GET /api/stats | 200 | 1ms | 191B | ::1
+2026-06-26T17:31:45.229Z | [cb9b616b449c6446] GET /api/properties | 304 | 1ms | 0B | ::1
+2026-06-26T17:31:45.230Z | [968b34cc1a51325e] GET /api/team | 304 | 2ms | 0B | ::1
